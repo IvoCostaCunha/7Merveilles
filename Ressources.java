@@ -17,21 +17,21 @@ public enum Ressources {
 		valeur = value;
 	}
 	
-	public int getQuantitéRessources()
+	public int getQuantiteRessources()
 	{
 		return valeur;
 	}
 	
-	public void setQuantitéRessources(int nouvelleValeur)
+	public void setQuantiteRessources(int nouvelleValeur)
 	{
 		valeur = nouvelleValeur;
 	}
 	
-	@Override
+	/*@Override
 	public String toString()
 	{
 		return this.toString();
-	}
+	}*/
 }
 
 	

@@ -10,16 +10,18 @@ public enum Plateau {
 	
 	private Ressources RessourcePlateau;
 	
- Plateau (Ressources uneRessource)
-{
-	uneRessource.setQuantitéRessources(1);
+
+	Plateau (Ressources uneRessource)
+	{
+	uneRessource.setQuantiteRessources(1);
 	RessourcePlateau = uneRessource; 
 	
-}
+	}
  
- public Ressources getRessourcePlateau()
- {
+
+	public Ressources getRessourcePlateau()
+	{
 	 return this.RessourcePlateau;
- }
+	}
  
 }

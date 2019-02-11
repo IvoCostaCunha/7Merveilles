@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Joueur {
 	private String name;
+	private int Points;
 	private Plateau PlateauJoueur;
 	private ArrayList<Ressources> RessourcesJoueur = new ArrayList<Ressources>();
 	private ArrayList<Carte> CartesJoueur =  new ArrayList<Carte>();
@@ -26,12 +27,18 @@ public class Joueur {
 	{
 		for (Ressources r : RessourcesJoueur)
 		{
-			if (uneRessource == r)
+			if (uneRessource.toString() == r.toString())
 			{
-				r.setQuantitéRessources(uneRessource.getQuantitéRessources());
+				r.setQuantiteRessources(uneRessource.getQuantiteRessources());
 			}
 		}
 	}
+	
+	public void compterLesPoints(int desPoints)
+	{
+		Points += desPoints;
+	}
+	
 	
 	
 }
