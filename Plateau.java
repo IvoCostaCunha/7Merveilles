@@ -17,7 +17,7 @@ public enum Plateau {
 	
 }
  
- public Ressources getRessource()
+ public Ressources getRessourcePlateau()
  {
 	 return this.RessourcePlateau;
  }

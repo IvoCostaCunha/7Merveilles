@@ -10,7 +10,29 @@ public class Joueur {
 	public Joueur(int value)
 	{
 		name = "Joueur" + value;
+		for (Ressources r : Ressources.values())
+		{
+			RessourcesJoueur.add(r);
+		}
 	}
+	
+	public void obtenirPlateau(Plateau unPlateau)
+	{
+		PlateauJoueur = unPlateau;
+		this.setNouvelleRessourceJoueur(PlateauJoueur.getRessourcePlateau());
+	}
+	
+	public void setNouvelleRessourceJoueur(Ressources uneRessource)
+	{
+		for (Ressources r : RessourcesJoueur)
+		{
+			if (uneRessource == r)
+			{
+				r.setQuantitéRessources(uneRessource.getQuantitéRessources());
+			}
+		}
+	}
+	
 	
 }
 

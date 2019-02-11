@@ -26,6 +26,12 @@ public enum Ressources {
 	{
 		valeur = nouvelleValeur;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return this.toString();
+	}
 }
 
 	
