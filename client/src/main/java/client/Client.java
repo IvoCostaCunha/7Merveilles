@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 public class Client {
 
-    Identification moi = new Identification("Michel B", 42);
+    //temporaire :
 
     Socket connexion;
-    int propositionCourante = 50;
+
 
     // Objet de synchro
     final Object attenteDéconnexion = new Object();
@@ -29,16 +29,13 @@ public class Client {
         try {
             connexion = IO.socket(urlServeur);
 
-            System.out.println("on s'abonne à la connection / déconnection ");;
+            System.out.println("Vous avez rejoint la partie");
 
             connexion.on("connect", new Emitter.Listener() {
                 @Override
                 public void call(Object... objects) {
-                    System.out.println(" on est connecté ! et on s'identifie ");
 
-                    // on s'identifie
-                    JSONObject id = new JSONObject(moi);
-                    connexion.emit("identification", id);
+                    connexion.emit("rejoindrePartie");
 
                 }
             });
@@ -46,7 +43,7 @@ public class Client {
             connexion.on("disconnect", new Emitter.Listener() {
                 @Override
                 public void call(Object... objects) {
-                    System.out.println(" !! on est déconnecté !! ");
+                    System.out.println("Deconnexion");
                     connexion.disconnect();
                     connexion.close();
 
@@ -58,41 +55,17 @@ public class Client {
 
 
             // on recoit une question
-            connexion.on("question", new Emitter.Listener() {
+           connexion.on("nbJoueurs", new Emitter.Listener() {
                 @Override
                 public void call(Object... objects) {
-                    int pas = 1;
-                    System.out.println("on a reçu une question avec "+objects.length+" paramètre(s) ");
-                    if (objects.length > 0 ) {
-                        System.out.println("la réponse précédente était : "+objects[0]);
+                    System.out.println("Vous êtes le joueur numero" + objects[0]);
+                }
+            });
 
-                        boolean plusGrand = (Boolean)objects[0];
-                        // false, c'est plus petit... !! erreur... dans les commit d'avant
-
-                            if (plusGrand)  pas=-1;
-                            else pas=+1;
-
-
-                        System.out.println(objects[1]);
-
-                        // conversion local en ArrayList, juste pour montrer
-                        JSONArray tab = (JSONArray) objects[1];
-                        ArrayList<Coup> coups = new ArrayList<Coup>();
-                        for(int i = 0; i < tab.length(); i++) {
-
-                            try {
-                                coups.add(new Coup(tab.getJSONObject(i).getInt("coup"), tab.getJSONObject(i).getBoolean("plusGrand")));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        System.out.println(coups);
-
-                    }
-                    propositionCourante += pas;
-                    System.out.println("on répond "+propositionCourante);
-                    connexion.emit("réponse",  propositionCourante);
+            connexion.on("lancerPartie", new Emitter.Listener() {
+                @Override
+                public void call(Object... objects) {
+                    System.out.println("QUE LE JEU COMMENCE !!!");
                 }
             });
 
@@ -108,7 +81,7 @@ public class Client {
         // on se connecte
         connexion.connect();
 
-        System.out.println("en attente de déconnexion");
+        //System.out.println("en attente de déconnexion");
         synchronized (attenteDéconnexion) {
             try {
                 attenteDéconnexion.wait();
@@ -126,7 +99,7 @@ public class Client {
             e.printStackTrace();
         }
 
-        Client client = new Client("http://127.0.0.1:10101");
+        Client client = new Client("http://127.0.0.1:555");
         client.seConnecter();
 
 

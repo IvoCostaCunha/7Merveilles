@@ -21,11 +21,17 @@ public class Serveur {
 
     SocketIOServer serveur;
     final Object attenteConnexion = new Object();
-    private int àTrouvé = 42;
-    Identification leClient ;
+    int nbJoueurs = 0;
 
-    ArrayList<Coup> coups = new ArrayList<>();
 
+
+    public void ajouterJoueur() {
+    	nbJoueurs++;
+    }
+
+    public int getNbJoueur() {
+    	return nbJoueurs;
+    }
 
     public Serveur(Configuration config) {
         // creation du serveur
@@ -35,48 +41,27 @@ public class Serveur {
 
         System.out.println("préparation du listener");
 
-        // on accept une connexion
+        // on accepte une connexion
         serveur.addConnectListener(new ConnectListener() {
             public void onConnect(SocketIOClient socketIOClient) {
-                System.out.println("connexion de "+socketIOClient.getRemoteAddress());
-
-                // on ne s'arrête plus ici
-            }
-        });
-
-        // réception d'une identification
-        serveur.addEventListener("identification", Identification.class, new DataListener<Identification>() {
-            @Override
-            public void onData(SocketIOClient socketIOClient, Identification identification, AckRequest ackRequest) throws Exception {
-                System.out.println("Le client est "+identification.getNom());
-                leClient = new Identification(identification.getNom(), identification.getNiveau());
-
-                // on enchaine sur une question
-                poserUneQuestion(socketIOClient);
-            }
-        });
-
-
-            // on attend une réponse
-        serveur.addEventListener("réponse", int.class, new DataListener<Integer>() {
-            @Override
-            public void onData(SocketIOClient socketIOClient, Integer integer, AckRequest ackRequest) throws Exception {
-                System.out.println("La réponse de  "+leClient.getNom()+" est "+integer);
-                Coup coup = new Coup(integer, integer > àTrouvé);
-                if (integer == àTrouvé) {
-                    System.out.println("le client a trouvé ! ");
-                    synchronized (attenteConnexion) {
-                        attenteConnexion.notify();
-                    }
-                } else
-                {
-                    coups.add(coup);
-                    System.out.println("le client doit encore cherché ");
-                    poserUneQuestion(socketIOClient, coup.isPlusGrand());
-                }
+                System.out.println("\nUne connexion effectuee");
+                nbJoueurs++;
+	        	donnerNbJoueurs(socketIOClient, nbJoueurs);
+	        	if(nbJoueurs == 4) {
+	        		lancerPartie(socketIOClient);
+	        	}
 
             }
         });
+
+
+        serveur.addEventListener("rejoindrePartie", Object.class, new DataListener<Object>() {
+	    @Override
+	    public void onData(SocketIOClient socketIOClient, Object objVide, AckRequest ackRequest) throws Exception {
+	       
+	        System.out.println("connexion du client numero " + nbJoueurs);
+	   		}
+		});
 
 
 
@@ -103,12 +88,12 @@ public class Serveur {
     }
 
 
-    private void poserUneQuestion(SocketIOClient socketIOClient) {
-        socketIOClient.sendEvent("question");
+    private void donnerNbJoueurs(SocketIOClient socketIOClient, int nbJoueurs) {
+        socketIOClient.sendEvent("nbJoueurs", nbJoueurs);
     }
 
-    private void poserUneQuestion(SocketIOClient socketIOClient, boolean plusGrand) {
-        socketIOClient.sendEvent("question", plusGrand, coups);
+    private void lancerPartie(SocketIOClient socketIOClient) {
+        socketIOClient.sendEvent("lancerPartie");
     }
 
 
@@ -122,7 +107,7 @@ public class Serveur {
 
         Configuration config = new Configuration();
         config.setHostname("127.0.0.1");
-        config.setPort(10101);
+        config.setPort(555);
 
 
         Serveur serveur = new Serveur(config);
