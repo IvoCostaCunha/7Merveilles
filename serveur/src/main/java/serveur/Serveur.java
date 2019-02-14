@@ -22,7 +22,7 @@ public class Serveur {
     SocketIOServer serveur;
     final Object attenteConnexion = new Object();
     int nbJoueurs = 0;
-
+    ArrayList<SocketIOClient> listeClients = new ArrayList<SocketIOClient>();
 
 
     public void ajouterJoueur() {
@@ -44,6 +44,7 @@ public class Serveur {
         // on accepte une connexion
         serveur.addConnectListener(new ConnectListener() {
             public void onConnect(SocketIOClient socketIOClient) {
+            	listeClients.add(socketIOClient);
                 System.out.println("\nUne connexion effectuee");
                 nbJoueurs++;
 	        	donnerNbJoueurs(socketIOClient, nbJoueurs);
@@ -93,7 +94,10 @@ public class Serveur {
     }
 
     private void lancerPartie(SocketIOClient socketIOClient) {
-        socketIOClient.sendEvent("lancerPartie");
+        for(SocketIOClient client: listeClients) {
+        	client.sendEvent("lancerPartie");
+        	//Envoyer du JSON (cartes)
+        }
     }
 
 
@@ -107,7 +111,7 @@ public class Serveur {
 
         Configuration config = new Configuration();
         config.setHostname("127.0.0.1");
-        config.setPort(555);
+        config.setPort(557);
 
 
         Serveur serveur = new Serveur(config);
