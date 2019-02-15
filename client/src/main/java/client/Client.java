@@ -1,7 +1,9 @@
 package client;
 
-import commun.Coup;
-import commun.Identification;
+import commun.Joueur;
+import commun.Plateau;
+import commun.Merveille;
+import commun.Carte;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -19,13 +21,18 @@ public class Client {
     //temporaire :
 
     Socket connexion;
+    ArrayList<Joueur> listeJoueursClient = new ArrayList<Joueur>();
+    ArrayList<Plateau> listePlateauxClient = new ArrayList<Plateau>();
+    ArrayList<Carte> listeCarteClient = new ArrayList<Carte>();
 
 
     // Objet de synchro
     final Object attenteDéconnexion = new Object();
 
     public Client(String urlServeur) {
-
+    	// On fait en sorte que des joueurs soient crées
+    	
+    	
         try {
             connexion = IO.socket(urlServeur);
 
@@ -36,7 +43,6 @@ public class Client {
                 public void call(Object... objects) {
 
                     connexion.emit("rejoindrePartie");
-
                 }
             });
 
@@ -66,6 +72,24 @@ public class Client {
                 @Override
                 public void call(Object... objects) {
                     System.out.println("QUE LE JEU COMMENCE !!!");
+                    for (int i=0;i<4;i++)
+                	{
+                		listeJoueursClient.add(new Joueur(i+1));
+                		System.out.println("Joueur"+i+"prêt");
+                	}
+                	// Ces joueurs choisissent leurs cartes
+                	for (Joueur j : listeJoueursClient)
+                	{
+                		
+                		listePlateauxClient = j.choisirPlateau(listePlateauxClient);
+                		// On distribue 7 cartes pour chaque joueur
+                		for (int i = 0;i<7;i++)
+                		{
+                			listeCarteClient.add(j.choisirCarte());
+                			System.out.println("Distribution d'une carte");
+                		}
+                		
+                	}
                 }
             });
 
