@@ -72,7 +72,7 @@ public class Client {
                 @Override
                 public void call(Object... objects) {
                     System.out.println("QUE LE JEU COMMENCE !!!");
-                    for (int i=0;i<4;i++)
+                    /*for (int i=0;i<4;i++)
                 	{
                 		listeJoueursClient.add(new Joueur(i+1));
                 		System.out.println("Joueur"+i+"prêt");
@@ -89,7 +89,7 @@ public class Client {
                 			System.out.println("Distribution d'une carte");
                 		}
                 		
-                	}
+                	}*/
                 }
             });
 
