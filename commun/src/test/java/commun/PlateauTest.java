@@ -42,5 +42,4 @@ public class PlateauTest {
 
         assertEquals(3,p.getNiveauDeMerveilleActuel());
     }
-
 }

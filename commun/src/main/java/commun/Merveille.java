@@ -5,8 +5,6 @@ public class Merveille {
 		private int pointsMerveille = 0;
 		private int niveau;
 		private boolean valable;
-		//private Joueur joueur = new Joueur(1);
-		//private boolean partieTerminee = true;
 		
 		public Merveille (int pointsMerveille)
 		{
@@ -18,34 +16,17 @@ public class Merveille {
 			this.valable = false;
 			pointsMerveille = 0 + (int)	(Math.random() * ((20-0) + 1)); 
 		}
-		public void setMerveilleValable()
-		{
-			valable = true;
-		}
-		public Boolean getStatutMerveille()
-		{
-			return valable;
-		}
-		public int getPointsMerveille()
-		{
-			return pointsMerveille;
-		}
-		public int getNiveauMerveille() { return niveau; }
 
 		/*---------- Geteurs ----------*/
+		public void setMerveilleValable() { valable = true; };
+		public Boolean getStatutMerveille() { return valable; };
+		public int getPointsMerveille() { return pointsMerveille; }
+		public int getNiveauMerveille() { return niveau; }
+
+
+		/*---------- Seteurs ----------*/
 		public void setNiveau(int niveau) { this.niveau = niveau; }
-		/*
-		public void compterPointsMerveille()
-		{
-			if (partieTerminee)
-				{
-					if (valable == true)
-					{
-						//joueur.compterLesPointsJoueur(pointsMerveille);
-					}
-			}
-		}
-		*/
+
 }
 
 
