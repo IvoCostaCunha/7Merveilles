@@ -1,17 +1,17 @@
 package commun;
 
 public class Merveille {
-	
+
 		private int pointsMerveille = 0;
 		private int niveau;
 		private boolean valable;
 		//private Joueur joueur = new Joueur(1);
 		//private boolean partieTerminee = true;
 		
-		public Merveille (int valeur)
+		public Merveille (int pointsMerveille)
 		{
 			this.valable = false;
-			pointsMerveille = valeur;
+			this.pointsMerveille = pointsMerveille;
 		}
 		public Merveille ()
 		{
@@ -30,6 +30,10 @@ public class Merveille {
 		{
 			return pointsMerveille;
 		}
+		public int getNiveauMerveille() { return niveau; }
+
+		/*---------- Geteurs ----------*/
+		public void setNiveau(int niveau) { this.niveau = niveau; }
 		/*
 		public void compterPointsMerveille()
 		{
