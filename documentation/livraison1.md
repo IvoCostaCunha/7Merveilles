@@ -1,4 +1,5 @@
-# Livraison 1 - 16/02/2019
+# Livraison 1 - 16/02/2019 
+## Tag : ITERATION1
 ## Fonctionnalitées implantés
 - Classes permettant d'instancier les éléments simplifiés prevus présentes
 - Modèle de client-serveur permettant la connexion de joueurs (4)
