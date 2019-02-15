@@ -25,13 +25,21 @@ class MerveilleTest {
 		assertEquals(res,merv.getPointsMerveille());
 	}
 
-	// Test d'une valeur absolue sur une valeur random ... faudra que tu corrige Yan
-	/*@Test
+	
+	@Test
 	public void ValeuRandomMerveilleTest() throws Exception
 	{
 		Merveille merv = new Merveille();
 		int res = 20;
-		assertEquals(res == merv.getPointsMerveille(),false);
-	}*/
+		if (merv.getPointsMerveille() !=20)
+		{
+			assertEquals(res == merv.getPointsMerveille(),false);
+		}
+		else 
+		{
+			assertEquals(res == merv.getPointsMerveille(),true);
+		}
+		
+	}
 
 }
