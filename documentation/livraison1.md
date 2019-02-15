@@ -12,6 +12,9 @@
 - Pas de gestion des tours
 - Pas de fin de partie
 
+## Bilan de l'itération sur les test
+Les principales fonctions/méthodes des classes sont testés dans le cas de circonstances courantes. Les cas rares ne sont pas encore traités.
+
 ## Bilan 
 Beaucoup de tâches n'ont pas étés terminées sourtout en ce qui concerne le dynamisme de la partie.
 Les classes nécessaire pour la suite sont néanmois présentes bien que nécéssitant des ameillorations.
