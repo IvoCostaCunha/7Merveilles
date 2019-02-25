@@ -11,6 +11,7 @@
 *.iml
 .gradle
 **/local.properties
+**/bin
 # on peut enlever tout le dossier .idea : il sera alors à refaire par chaque developpeur
 **/.idea/
 # ou on peut enlever cibler plus finement, mais on laisse alors des traces d'intellij dans le git
