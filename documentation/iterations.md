@@ -28,14 +28,26 @@
 
 #### Ajouté dans cette itération
 
-- ...
+- Rien, on ne fait que rattraper le retard
 
 ### Itération 3 - 06/03/2019
 
+#### Fonctionnalités prévues
+
 ### Itération 4 - 20/03/2019
+
+#### Fonctionnalités prévues
 
 ### Itération 5 - 27/03/2019
 
+#### Fonctionnalités prévues
+
 ### Itération 6 - 10/04/2019
 
-### Itération 7 - 06/03/2019
+#### Fonctionnalités prévues
+
+### Itération 7 - Rendu final ! - 06/05/2019
+
+#### Fonctionnalités prévues 
+
+- Le reste des fonctionnalités des itérations précédantes
