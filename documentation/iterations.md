@@ -34,20 +34,33 @@
 
 #### Fonctionnalités prévues
 
+- Gérer les ressources et golds pour acheter des cartes 
+- Acheter des ressources à un autre joueur
+
 ### Itération 4 - 20/03/2019
 
 #### Fonctionnalités prévues
+
+- Plusieurs types de cartes
 
 ### Itération 5 - 27/03/2019
 
 #### Fonctionnalités prévues
 
+- Face A/B des plateaux
+- Caracteristiques particulières des plateaux
+- Gérer les pouvoirs / effets
+
 ### Itération 6 - 10/04/2019
 
 #### Fonctionnalités prévues
+
+- Reglès militaires
 
 ### Itération 7 - Rendu final ! - 06/05/2019
 
 #### Fonctionnalités prévues 
 
 - Le reste des fonctionnalités des itérations précédantes
+- Gildes
+- Bots "intelligents"
