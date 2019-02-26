@@ -2,6 +2,7 @@
 **/out/
 **/target/
 **/build/
+**/bin
 # pour la javadoc (selon le nom du dossier pouvant la contenir)
 **/javadoc/
 **/apidocs/
