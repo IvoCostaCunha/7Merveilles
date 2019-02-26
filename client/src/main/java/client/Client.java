@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Client {
 
@@ -73,7 +74,18 @@ public class Client {
                     Gson g =  new Gson();
                     Carte c = g.fromJson(strJson, Carte.class);
                     System.out.println("Le nom de la carte : " + c.getNomCarte());
-                    System.out.println("Le nombre de points de la carte" + c.getPointsCarte());
+                    System.out.println("Le nombre de points de la carte : " + c.getPointsCarte());
+                }
+            });
+
+            connexion.on("envoyerCartes", new Emitter.Listener() {
+                @Override
+                public void call(Object... objects) {
+                    String strJson = (String) objects[0];
+                    Gson g =  new Gson();
+                    List<Carte> listeC = (List<Carte>) g.fromJson(strJson, Carte.class);
+                    System.out.println("Le nom de la carte : " + listeC.get(0));
+                    System.out.println("Le nombre de points de la carte : " + c.getPointsCarte());
                 }
             });
 

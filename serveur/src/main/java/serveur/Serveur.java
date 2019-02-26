@@ -6,9 +6,6 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import commun.Carte;
 import org.json.JSONObject;
 
@@ -27,9 +24,13 @@ public class Serveur {
     final Object attenteConnexion = new Object();
     int nbJoueurs = 0;
     ArrayList<SocketIOClient> listeClients = new ArrayList<SocketIOClient>();
-    ArrayList<Carte> listeCartes = new ArrayList<>();
+    ArrayList<Carte> listeCartes = new ArrayList<Carte>();
 
-    Carte nouvelleCarte = new Carte("nom de la carte", 1);
+    Carte carte1 = new Carte("nom de la carte 1", 1);
+    Carte carte2 = new Carte("nom de la carte 2", 2);
+    Carte carte3 = new Carte("nom de la carte 3", 3);
+    Carte carte4 = new Carte("nom de la carte 4", 4);
+
 
 
     public void ajouterJoueur() {
@@ -41,6 +42,12 @@ public class Serveur {
     }
 
     public Serveur(Configuration config) {
+
+        listeCartes.add(carte1);
+        listeCartes.add(carte2);
+        listeCartes.add(carte3);
+        listeCartes.add(carte4);
+
         // creation du serveur
         serveur = new SocketIOServer(config);
 
@@ -98,7 +105,8 @@ public class Serveur {
 
     private void lancerPartie(SocketIOClient socketIOClient) {
         for(SocketIOClient client: listeClients) {
-            JSONObject carteJSON = new JSONObject(nouvelleCarte);
+            JSONObject carteJSON = new JSONObject(carte3);
+            JSONObject cartesJSON = new JSONObject(listeCartes);
             client.sendEvent("lancerPartie");
             System.out.println(carteJSON);
         	client.sendEvent("envoyerCarte", carteJSON.toString());
