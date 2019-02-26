@@ -7,18 +7,15 @@ import commun.Carte;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import org.json.JSONArray;
-import org.json.JSONException;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONObject;
-
+import com.google.gson.*;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class Client {
-
-    //temporaire :
 
     Socket connexion;
     ArrayList<Joueur> listeJoueursClient = new ArrayList<Joueur>();
@@ -66,31 +63,42 @@ public class Client {
                 public void call(Object... objects) {
                     System.out.println("Vous êtes le joueur numero" + objects[0]);
                 }
+           });
+
+            connexion.on("envoyerCarte", new Emitter.Listener() {
+                @Override
+                public void call(Object... objects) {
+                    //System.out.println("carte : " + objects[0]);
+                    String strJson = (String) objects[0];
+                    Gson g =  new Gson();
+                    Carte c = g.fromJson(strJson, Carte.class);
+                    System.out.println("Le nom de la carte : " + c.getNomCarte());
+                    System.out.println("Le nombre de points de la carte" + c.getPointsCarte());
+                }
             });
 
             connexion.on("lancerPartie", new Emitter.Listener() {
                 @Override
                 public void call(Object... objects) {
                     System.out.println("QUE LE JEU COMMENCE !!!");
-                    /*for (int i=0;i<4;i++)
+                   /* for (int i=0;i<4;i++)
                 	{
-                		listeJoueursClient.add(new Joueur(i+1));
-                		System.out.println("Joueur"+i+"prêt");
-                	}
+                		listeJoueursClient.add(new Joueur(i));
+                		System.out.println("Joueur"+i+" prêt");
+
+                	}*/
                 	// Ces joueurs choisissent leurs cartes
-                	for (Joueur j : listeJoueursClient)
+                	/*for (Joueur j : listeJoueursClient)
                 	{
-                		
                 		listePlateauxClient = j.choisirPlateau(listePlateauxClient);
                 		// On distribue 7 cartes pour chaque joueur
                 		for (int i = 0;i<7;i++)
                 		{
-                			listeCarteClient.add(j.choisirCarte());
+                			//listeCarteClient.add(j.choisirCarte());
                 			System.out.println("Distribution d'une carte");
-                		}
-                		
-                	}*/
-                }
+                		}*/
+                	}
+                //}
             });
 
 
@@ -123,7 +131,7 @@ public class Client {
             e.printStackTrace();
         }
 
-        Client client = new Client("http://127.0.0.1:557");
+        Client client = new Client("http://127.0.0.1:131");
         client.seConnecter();
 
 

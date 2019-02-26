@@ -1,4 +1,4 @@
-# exclusion des dossiers contenant les élements générés
+﻿# exclusion des dossiers contenant les élements générés
 **/out/
 **/target/
 **/build/
@@ -6,6 +6,8 @@
 **/javadoc/
 **/apidocs/
 **/testapidocs/
+
+*.class
 
 # pour intellij
 *.iml

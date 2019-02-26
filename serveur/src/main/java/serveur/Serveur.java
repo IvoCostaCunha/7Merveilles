@@ -6,6 +6,12 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import commun.Carte;
+import org.json.JSONObject;
+
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -21,6 +27,9 @@ public class Serveur {
     final Object attenteConnexion = new Object();
     int nbJoueurs = 0;
     ArrayList<SocketIOClient> listeClients = new ArrayList<SocketIOClient>();
+    ArrayList<Carte> listeCartes = new ArrayList<>();
+
+    Carte nouvelleCarte = new Carte("nom de la carte", 1);
 
 
     public void ajouterJoueur() {
@@ -49,7 +58,6 @@ public class Serveur {
 	        	if(nbJoueurs == 4) {
 	        		lancerPartie(socketIOClient);
 	        	}
-
             }
         });
 
@@ -57,17 +65,14 @@ public class Serveur {
         serveur.addEventListener("rejoindrePartie", Object.class, new DataListener<Object>() {
 	    @Override
 	    public void onData(SocketIOClient socketIOClient, Object objVide, AckRequest ackRequest) throws Exception {
-	       
+
 	        System.out.println("connexion du client numero " + nbJoueurs);
 	   		}
 		});
-
-
-
     }
 
 
-    private void démarrer() {
+    public void démarrer() {
 
         serveur.start();
 
@@ -93,8 +98,10 @@ public class Serveur {
 
     private void lancerPartie(SocketIOClient socketIOClient) {
         for(SocketIOClient client: listeClients) {
-        	client.sendEvent("lancerPartie");
-        	//Envoyer du JSON (cartes)
+            JSONObject carteJSON = new JSONObject(nouvelleCarte);
+            client.sendEvent("lancerPartie");
+            System.out.println(carteJSON);
+        	client.sendEvent("envoyerCarte", carteJSON.toString());
         }
     }
 
@@ -109,7 +116,7 @@ public class Serveur {
 
         Configuration config = new Configuration();
         config.setHostname("127.0.0.1");
-        config.setPort(557);
+        config.setPort(131);
 
 
         Serveur serveur = new Serveur(config);
