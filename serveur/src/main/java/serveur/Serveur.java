@@ -6,6 +6,11 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.fasterxml.jackson.core.JsonEncoding;
+import commun.Carte;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -28,32 +33,22 @@ public class Serveur {
 
     /* ---------- Elements de jeu initiaux ---------- */
     private ArrayList<ArrayList<Carte>> decksCirculants = new ArrayList<ArrayList<Carte>>();
-    private ArrayList<Carte> deckCirculant1 = new ArrayList<Carte>(7);
-    private ArrayList<Carte> deckCirculant2 = new ArrayList<Carte>(7);
-    private ArrayList<Carte> deckCirculant3 = new ArrayList<Carte>(7);
-    private ArrayList<Carte> deckCirculant4 = new ArrayList<Carte>(7);
 
-
-
-
-    public void incrementerNbJoueurs() {
-    	nbJoueurs++;
-    }
-
-    public int getNbJoueur() {
-    	return nbJoueurs;
-    }
 
     /**
      * Constructeur de la classe serveur
      * @param config objet de configuration du serveur
      */
     public Serveur(Configuration config) {
-        // Création du serveur
+
+        // creation du serveur
         serveur = new SocketIOServer(config);
 
         // Objet de synchronisation
         System.out.println("préparation du listener");
+
+        //instanciation des éléments de jeu
+        this.initialisationElementsJeu();
 
         // on accepte une connexion
         serveur.addConnectListener(new ConnectListener() {
@@ -63,20 +58,31 @@ public class Serveur {
                 incrementerNbJoueurs();
 	        	donnerNbJoueurs(socketIOClient, nbJoueurs);
                 System.out.println("connexion du client numero " + nbJoueurs);
-	        	if(nbJoueurs == 4) { lancerPartie(); }
+	        	if(nbJoueurs == 1/*4*/) { lancerPartie(); }
             }
         });
 
+        // Event Listener pour lorque un client envoie un event de renvoi de cartes
+        serveur.addEventListener("renvoieCartes", String.class, new DataListener<String>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, String s, AckRequest ackRequest) throws Exception {
+                System.out.println("cartesRenvoyées : ");
 
-        /*serveur.addEventListener("rejoindrePartie", Object.class, new DataListener<Object>() {
-	    @Override
-	    public void onData(SocketIOClient socketIOClient, Object objVide, AckRequest ackRequest) throws Exception {
-	        System.out.println("connexion du client numero " + nbJoueurs);
-	        }
-        });*/
+                // TODO: Encore a remplacer par une fonction / eviter dupliqués
+                // Recuperation des cartes non utilisés par le client
+                JSONArray cartesRecues = new JSONArray(s);
+                decksCirculants.get(0).clear();
+                for(int i=0;i<6;i++){
+                    String nomCarte = cartesRecues.getJSONObject(i).getString("nomCarte");
+                    int nbPointsCarte = cartesRecues.getJSONObject(i).getInt("pointsCarte");
+                    Carte carte = new Carte(nomCarte, nbPointsCarte);
+                    decksCirculants.get(0).add(carte);
+                    System.out.println("Carte #" + i + " : " + decksCirculants.get(0).get(i).getNomCarte()
+                            + ";" + decksCirculants.get(0).get(i).getPointsCarte());
+                }
 
-
-
+            }
+        });
     }
 
     /* ----------- méthode main ----------- */
@@ -99,9 +105,7 @@ public class Serveur {
     }
 
 
-
-    private void démarrer() {
-
+    public void démarrer() {
         serveur.start();
 
         System.out.println("en attente de connexion");
@@ -115,7 +119,14 @@ public class Serveur {
 
         System.out.println("Une connexion est arrivée, on arrête");
         serveur.stop();
+    }
 
+    public void incrementerNbJoueurs() {
+        nbJoueurs++;
+    }
+
+    public int getNbJoueur() {
+        return nbJoueurs;
     }
 
 
@@ -133,15 +144,36 @@ public class Serveur {
      */
     private void lancerPartie() {
         for(SocketIOClient client: listeClients) {
+
         	client.sendEvent("msgDebutPartie");
-        	//Envoyer du JSON (cartes)
+        	System.out.println("Client connecté");
+
+            //Envoyer du JSON (cartes)
+            //JSONObject carteJSON = new JSONObject(new Carte("TestCarte",9000));
+            JSONArray cartesCourantesJSON = new JSONArray();
+
+            // TODO : Faudrait creer un envoyer tour a tour a chaque client afin de faire circuler le paquet
+            for(Carte uneCarte : decksCirculants.get(0)){
+                JSONObject carte = new JSONObject(uneCarte);
+                cartesCourantesJSON.put(carte);
+            }
+            //System.out.println(decksCirculants.toString());
+
+
+
+            client.sendEvent("lancerPartie");
+
+            //System.out.println("CarteTest : " + carteJSON.toString());
+            System.out.println("Deck : " + cartesCourantesJSON.toString());
+        	//client.sendEvent("envoyerCarte", carteJSON.toString());
+        	client.sendEvent("envoyerCarte", cartesCourantesJSON.toString());
         }
     }
 
     /**
      * Méthode qui instancie TOUS éléments de jeu initiaux
      */
-    private void initialisationElemJeu(){
+    private void initialisationElementsJeu(){
         initialisationDecksCirculants();
     }
 
@@ -149,9 +181,12 @@ public class Serveur {
      * Méthode qui instancie les cecks circulants
      */
     private void initialisationDecksCirculants(){
+        for(int i=0;i<7;i++){
+            decksCirculants.add(new ArrayList<Carte>(7));
+        }
         for(ArrayList<Carte> deck : decksCirculants){
             for(int i=0;i<7; i++){
-                deck.add(new Carte("Carte"+(i+1),(int)Math.random()*20));
+                deck.add(new Carte("Carte"+(i+1),(int)(Math.random()*200)));
             }
         }
     }
@@ -162,12 +197,12 @@ public class Serveur {
     private void initialiserPleateaux(){
         for(int i=0;i<7;i++){
             // Generer les merveilles de manière aléatoire NB + POINTS
-            ArrayList<Merveille>
+            //ArrayList<Merveille>
+
 
             String nomPlateau = "plateau"+(i+1);
-            Plateau plateau+(i+1) = new Plateau()
+            //Plateau plateau+(i+1) = new Plateau();
         }
     }
-
 
 }

@@ -137,4 +137,7 @@ public class Joueur {
     public int getPoints() { return points; }
     public ArrayList<Carte> getCarteJoueurUtilisees() { return carteJoueurUtilisees; }
     public Plateau getPlateauJoueur() { return plateauJoueur; }
+
+    // TODO: Provisoire a enlever plus tard
+    public ArrayList<Carte> getCartesJoueurCourrantes() { return cartesJoueurCourrantes; }
 }

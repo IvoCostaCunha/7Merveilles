@@ -104,6 +104,8 @@ public class JoueurTest {
         assertNotEquals(j2.getPlateauJoueur(),j1.getPlateauJoueur());
     }
 
+
+    // TODO: Test parfois faux, a trouver + corriger erreur eventuelle
     @Test
     public void testJouer(){
         Joueur j1 = new Joueur(1);
