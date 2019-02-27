@@ -30,12 +30,22 @@
 
 - Rien, on ne fait que rattraper le retard
 
+#### Non fait
+
+- le refactoring de client / joueur 
+- instanciation partielle des éléments du jeu
+
 ### Itération 3 - 06/03/2019
 
 #### Fonctionnalités prévues
 
 - Gérer les ressources et golds pour acheter des cartes 
 - Acheter des ressources à un autre joueur
+
+#### Maj 27/02/2019
+
+- le refactoring de client / joueur 
+- finir instanciation des éléments du jeu
 
 ### Itération 4 - 20/03/2019
 
