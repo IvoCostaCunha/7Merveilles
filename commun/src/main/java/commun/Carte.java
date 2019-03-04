@@ -15,13 +15,14 @@ public class Carte {
     /**
      * Constructeur de la classe Carte
      * @param nomCarte nom de la carte
-     * @param points nombre de points que la carte rapporte
+     * @param points nombre de points que la carte rapporte, si définit à 0, est set à 1
      */
     public Carte(){}
 
     public Carte(String nomCarte, int points){
         this.nomCarte = nomCarte;
-        this.pointsCarte = points;
+        if (points == 0){ this.pointsCarte = 1; }
+        else{ this.pointsCarte = points; }
     }
 
     /*---------- Geteurs ----------*/

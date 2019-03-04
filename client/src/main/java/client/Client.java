@@ -81,7 +81,7 @@ public class Client {
                     try{
                         //JSONObject carteTest = new JSONObject(strCarteTest);
                         JSONArray deckCourantJSONArray = new JSONArray(strDeckCourant);
-                        System.out.println(deckCourantJSONArray.toString());
+                        //System.out.println(deckCourantJSONArray.toString());
                         ArrayList<Carte> deckCourantJoueur = new ArrayList<Carte>(7);
                         for(int i=0;i<7;i++){
                             JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
@@ -105,7 +105,7 @@ public class Client {
                             cartesRenvoyerJSONArray.put(carte);
                         }
 
-                        connexion.emit("renvoieCartes",cartesRenvoyerJSONArray.toString());
+                        connexion.emit("renvoieCartes",cartesRenvoyerJSONArray);
 
 
 
@@ -144,18 +144,10 @@ public class Client {
 
     }
 
-    private void seConnecter() {
+    public void seConnecter() {
         // on se connecte
         connexion.connect();
 
-        // System.out.println("en attente de déconnexion");
-        synchronized (attenteDéconnexion) {
-            try { attenteDéconnexion.wait(); }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-                System.err.println("erreur dans l'attente");
-            }
-        }
     }
 
     public static final void main(String []args) {

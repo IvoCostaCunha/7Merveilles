@@ -65,11 +65,15 @@ public class Serveur {
         });
 
         // Event Listener pour lorque un client envoie un event de renvoi de cartes
-        serveur.addEventListener("renvoieCartes", String.class, new DataListener<String>() {
+        serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, String s, AckRequest ackRequest) throws Exception {
-                System.out.println("cartesRenvoyées : ");
-
+            public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
+                System.out.println("cartesRenvoyées : "+cartes);
+                for(Carte c : cartes) {
+                    System.out.println("[serveur][" +socketIOClient.getSessionId()+"]> Carte : " + c.getNomCarte()
+                            + ";" + c.getPointsCarte());
+                }
+                /*
                 // TODO: Encore a remplacer par une fonction / eviter dupliqués
                 // Recuperation des cartes non utilisés par le client
                 JSONArray cartesRecues = new JSONArray(s);
@@ -82,6 +86,8 @@ public class Serveur {
                     System.out.println("Carte #" + i + " : " + decksCirculants.get(0).get(i).getNomCarte()
                             + ";" + decksCirculants.get(0).get(i).getPointsCarte());
                 }
+                */
+
 
             }
         });
@@ -111,7 +117,7 @@ public class Serveur {
         serveur.start();
     }
 
-    public  int incrementerNbJoueurs(SocketIOClient socketIOClient) {
+    public synchronized int incrementerNbJoueurs(SocketIOClient socketIOClient) {
         nbJoueurs++;
         listeClients.add(socketIOClient);
         return nbJoueurs;
@@ -161,6 +167,7 @@ public class Serveur {
             System.out.println("Deck : " + cartesCourantesJSON.toString());
         	//client.sendEvent("envoyerCarte", carteJSON.toString());
         	client.sendEvent("envoyerCarte", cartesCourantesJSON.toString());
+
         }
     }
 
