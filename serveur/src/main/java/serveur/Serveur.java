@@ -97,7 +97,6 @@ public class Serveur {
         config.setHostname("127.0.0.1");
         config.setPort(557);
 
-
         Serveur serveur = new Serveur(config);
         serveur.démarrer();
 

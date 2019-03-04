@@ -84,7 +84,7 @@ public class Client {
                         System.out.println(deckCourantJSONArray.toString());
                         ArrayList<Carte> deckCourantJoueur = new ArrayList<Carte>(7);
                         for(int i=0;i<7;i++){
-                            JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
+                            JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i));
                             //System.out.println(carteJSON);
                             Carte objCarte = new Carte(carteJSON.getString("nomCarte"),carteJSON.getInt("pointsCarte"));
                             deckCourantJoueur.add(objCarte);
@@ -105,7 +105,7 @@ public class Client {
                             cartesRenvoyerJSONArray.put(carte);
                         }
 
-                        connexion.emit("renvoieCartes",cartesRenvoyerJSONArray.toString());
+                        connexion.emit("renvoieCartes",cartesRenvoyerJSONArray);
 
 
 
@@ -144,7 +144,7 @@ public class Client {
 
     }
 
-    private void seConnecter() {
+    public void seConnecter() {
         // on se connecte
         connexion.connect();
 
