@@ -1,54 +1,30 @@
 package lanceur;
 
 import client.Client;
+import com.corundumstudio.socketio.Configuration;
 import serveur.Serveur;
 
 public class Partie {
 
     public final static void main(String [] args) {
 
-        Thread serveur = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Serveur.main(null);
-            }
-        });
+        Configuration config = new Configuration();
+        config.setHostname("127.0.0.1");
+        config.setPort(557);
 
-        Thread client = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Client.main(null);
-            }
-        });
+        Serveur s = new Serveur(config);
+        s.démarrer();
 
-        Thread client2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Client.main(null);
-            }
-        });
-        Thread client3 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Client.main(null);
-            }
-        });
+        /* Instanciations des clients en cas normal */
+        Client [] c = new Client[4];
+        for(int i = 0; i < c.length; i++)  {
+            c[i] = new Client("http://127.0.0.1:557");
+            c[i].seConnecter();
+        }
 
-        Thread client4 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Client.main(null);
-            }
-        });
-
-        /*---------- Lancement du serveur ----------*/
-        serveur.start();
-
-        /*---------- Lancement des clients ----------*/
-        client.start();
-        client2.start();
-        client3.start();
-        client4.start();
+        /* Instanciation d'un client pour simplifier les tests */
+        //Client unClient = new Client("http://127.0.0.1:557");
+        //unClient.seConnecter();
 
     }
 }
