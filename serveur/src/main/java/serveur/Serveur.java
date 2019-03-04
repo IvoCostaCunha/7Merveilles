@@ -6,7 +6,6 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.fasterxml.jackson.core.JsonEncoding;
 import commun.Carte;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,6 +32,8 @@ public class Serveur {
 
     /* ---------- Elements de jeu initiaux ---------- */
     private ArrayList<ArrayList<Carte>> decksCirculants = new ArrayList<ArrayList<Carte>>();
+    private ArrayList<ArrayList<Plateau>> plateauxDistribués = new ArrayList<ArrayList<Plateau>>();
+
 
 
     /**
@@ -45,7 +46,7 @@ public class Serveur {
         serveur = new SocketIOServer(config);
 
         // Objet de synchronisation
-        System.out.println("préparation du listener");
+        //System.out.println("préparation du listener");
 
         //instanciation des éléments de jeu
         this.initialisationElementsJeu();
@@ -53,12 +54,13 @@ public class Serveur {
         // on accepte une connexion
         serveur.addConnectListener(new ConnectListener() {
             public void onConnect(SocketIOClient socketIOClient) {
-            	listeClients.add(socketIOClient);
                 System.out.println("\nUne connexion effectuee");
-                incrementerNbJoueurs();
-	        	donnerNbJoueurs(socketIOClient, nbJoueurs);
-                System.out.println("connexion du client numero " + nbJoueurs);
-	        	if(nbJoueurs == 1/*4*/) { lancerPartie(); }
+                int id = incrementerNbJoueurs(socketIOClient);
+	        	donnerNbJoueurs(socketIOClient, id);
+                System.out.println("connexion du client numero " + id);
+	        	if(id == 4) { // A changer. 4 en version normale
+	        		lancerPartie(); 
+	        	}
             }
         });
 
@@ -107,22 +109,12 @@ public class Serveur {
 
     public void démarrer() {
         serveur.start();
-
-        System.out.println("en attente de connexion");
-        synchronized (attenteConnexion) {
-            try { attenteConnexion.wait(); }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-                System.err.println("erreur dans l'attente");
-            }
-        }
-
-        System.out.println("Une connexion est arrivée, on arrête");
-        serveur.stop();
     }
 
-    public void incrementerNbJoueurs() {
+    public  int incrementerNbJoueurs(SocketIOClient socketIOClient) {
         nbJoueurs++;
+        listeClients.add(socketIOClient);
+        return nbJoueurs;
     }
 
     public int getNbJoueur() {
@@ -147,6 +139,8 @@ public class Serveur {
 
         	client.sendEvent("msgDebutPartie");
         	System.out.println("Client connecté");
+
+        	//k k
 
             //Envoyer du JSON (cartes)
             //JSONObject carteJSON = new JSONObject(new Carte("TestCarte",9000));

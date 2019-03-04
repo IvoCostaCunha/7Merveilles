@@ -17,6 +17,8 @@ public class Carte {
      * @param nomCarte nom de la carte
      * @param points nombre de points que la carte rapporte
      */
+    public Carte(){}
+
     public Carte(String nomCarte, int points){
         this.nomCarte = nomCarte;
         this.pointsCarte = points;
