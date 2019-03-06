@@ -49,7 +49,7 @@ public class Ressource {
      * Méthode qui incremente le nb une Ressource
      * @param incrementation valeur de l'incrementation
      */
-    public void incrementerRessource(int incrementation){
+    public void incrementerRessource(int incrementation)    {
         this.nbRessource += incrementation;
     }
 

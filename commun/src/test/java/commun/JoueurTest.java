@@ -105,7 +105,6 @@ public class JoueurTest {
     }
 
 
-    // TODO: Test parfois faux, a trouver + corriger erreur eventuelle
     @Test
     public void testJouer(){
         Joueur j1 = new Joueur(1);
