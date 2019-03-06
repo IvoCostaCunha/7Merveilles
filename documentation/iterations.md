@@ -1,4 +1,4 @@
-# Iterations du Projet 7Wonders
+﻿# Iterations du Projet 7Wonders
 ## Participants
 
 - Ivo COSTA CUNHA
@@ -46,6 +46,17 @@
 
 - le refactoring de client / joueur 
 - finir instanciation des éléments du jeu
+
+#### Maj 06/03/19
+
+#### Ajouté dans cette itération 
+
+-Correction de quelques problèmes de mises en place
+
+#### Non fait
+
+- la mise en place des ressources par rapport au joueurs
+- la prise en compte de la monnaie
 
 ### Itération 4 - 20/03/2019
 
