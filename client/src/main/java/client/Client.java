@@ -84,7 +84,9 @@ public class Client {
                         //System.out.println(deckCourantJSONArray.toString());
                         ArrayList<Carte> deckCourantJoueur = new ArrayList<Carte>(7);
                         for(int i=0;i<7;i++){
-                            JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i));
+                            //System.out.println(deckCourantJSONArray.get(i));
+                            JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
+                            System.out.println(carteJSON);
                             //System.out.println(carteJSON);
                             Carte objCarte = new Carte(carteJSON.getString("nomCarte"),carteJSON.getInt("pointsCarte"));
                             deckCourantJoueur.add(objCarte);
@@ -94,6 +96,7 @@ public class Client {
                         System.out.println("Le joueur a joué la carte "
                                         + carteJoue.getNomCarte()
                                         + " qui vaut " + carteJoue.getPointsCarte() + " points");
+                        System.out.println("Le joueur a " + joueur.getRessourcesJoueur().get(7).toString()+"pieces");
                         //System.out.println(carteTest.toString());
                         //System.out.println(carteTest.getString("nomCarte"));
 

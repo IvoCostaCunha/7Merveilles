@@ -24,6 +24,11 @@ public class Joueur {
 	    ressourcesJoueur.add(new Ressource("Bois",0));
         ressourcesJoueur.add(new Ressource("Or",0));
         ressourcesJoueur.add(new Ressource("Pierre",0));
+        ressourcesJoueur.add(new Ressource("Brique",0));
+        ressourcesJoueur.add(new Ressource("Verre",0));
+        ressourcesJoueur.add(new Ressource("Papyrus",0));
+        ressourcesJoueur.add(new Ressource("Minerai",0));
+        ressourcesJoueur.add(new Ressource("Monnaie",3));
     }
 
     /**

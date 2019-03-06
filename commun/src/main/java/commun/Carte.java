@@ -33,7 +33,8 @@ public class Carte {
 
     public Carte(String nomCarte, int points, int prix){
         this.nomCarte = nomCarte;
-        this.pointsCarte = points;
+        if (points == 0){ this.pointsCarte = 1; }
+        else{ this.pointsCarte = points; }
         this.prixCarte = prix;
     }
 
