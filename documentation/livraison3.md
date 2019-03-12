@@ -1,21 +1,21 @@
 # Livraison 3 - 06/03/2019 
 ## Tag : ITERATION3
-## Fonctionnalitées implantés
+## FonctionnalitÃ©es implantÃ©s
 - Echange d'objets entre client et serveur et vis-versa
 - Correction du test unitaire pour la valeur random des cartes
-- Bon fonctionnement des mains des différents clients
+- Bon fonctionnement des mains des diffÃ©rents clients
 
-## Fonctionnalitées non implantés
+## FonctionnalitÃ©es non implantÃ©s
 - Refactoring de la classe Client / Joueur
-- Les plateaux ne sont pas instanciés dans Serveur encore
-- Les ressources ne sont pas gérées, que ce soit pour le joueur ou encore pour des transations
+- Les plateaux ne sont pas instanciÃ©s dans Serveur encore
+- Les ressources ne sont pas gÃ©rÃ©es, que ce soit pour le joueur ou encore pour des transations
 - Idem pour la monnaie
 
-## Bilan de l'itération sur les test
-Le test deffectueux a été corrigé
+## Bilan de l'itÃ©ration sur les test
+Le test deffectueux a Ã©tÃ© corrigÃ©
 Il manque encore et toujours les tests concernant les classes Serveur.java et Client.java
 
 ## Bilan 
 Le client-serveur semble fonctionnel
-Les fonctionnalités non faites sont reportés a l'itération 4
-Gros problème d'organisation général. Beaucoup de mal à identifier comment mettre en place des échanges entre clients.
+Les fonctionnalitÃ©s non faites sont reportÃ©s a l'itÃ©ration 4
+Gros problÃ¨me d'organisation gÃ©nÃ©ral. Beaucoup de mal Ã  identifier comment mettre en place des Ã©changes entre clients.

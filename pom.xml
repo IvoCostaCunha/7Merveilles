@@ -13,7 +13,8 @@
 		<module>serveur</module>
         <module>client</module>
         <module>lanceur</module>
-	</modules>
+        <module>outils</module>
+    </modules>
 
 	<packaging>pom</packaging>
 

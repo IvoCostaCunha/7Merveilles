@@ -22,6 +22,10 @@ public class Partie {
             c[i].seConnecter();
         }
 
+        /* Pour les tests */
+        /*Client c= new Client("http://127.0.0.1:557");
+        c.seConnecter();*/
+
         /* Instanciation d'un client pour simplifier les tests */
         //Client unClient = new Client("http://127.0.0.1:557");
         //unClient.seConnecter();

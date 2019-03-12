@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import commun.*;
+import outils.*;
 
 /**
  * attend une connexion, on envoie une question puis on attend une réponse, jusqu'à la découverte de la bonne réponse
@@ -32,9 +33,13 @@ public class Serveur {
 
     /* ---------- Elements de jeu initiaux ---------- */
     private ArrayList<ArrayList<Carte>> decksCirculants = new ArrayList<ArrayList<Carte>>();
-    private ArrayList<ArrayList<Plateau>> plateauxDistribués = new ArrayList<ArrayList<Plateau>>();
 
+    // A changer par une sous liste de plateaux si les face A/B sont gérés
+    private ArrayList<Plateau> plateauxDistribuables = new ArrayList<Plateau>();
 
+    private Affichage aff = new Affichage("BLUE","SERVEUR -> ");
+
+    ArrayList<String> couleursDispo;
 
     /**
      * Constructeur de la classe serveur
@@ -45,50 +50,35 @@ public class Serveur {
         // creation du serveur
         serveur = new SocketIOServer(config);
 
-        // Objet de synchronisation
-        //System.out.println("préparation du listener");
-
         //instanciation des éléments de jeu
         this.initialisationElementsJeu();
 
-        // on accepte une connexion
+        couleursDispo = aff.getCouleursDispo();
+        // BLUE enlevé vu que c'est pour le serveur
+        couleursDispo.remove(0);
+
+        // on accepte les connexions
         serveur.addConnectListener(new ConnectListener() {
             public void onConnect(SocketIOClient socketIOClient) {
-                System.out.println("\nUne connexion effectuee");
+                aff.afficher("Une connexion effectuee");
                 int id = incrementerNbJoueurs(socketIOClient);
 	        	donnerNbJoueurs(socketIOClient, id);
-                System.out.println("connexion du client numero " + id);
+                aff.afficher("connexion du client numero " + id);
 	        	if(id == 4) { // A changer. 4 en version normale
 	        		lancerPartie(); 
 	        	}
             }
         });
 
-        // Event Listener pour lorque un client envoie un event de renvoi de cartes
+        /* ---------- Listenners ---------- */
         serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
-                System.out.println("cartesRenvoyées : "+cartes);
+                aff.afficher("cartesRenvoyées : "+cartes);
                 for(Carte c : cartes) {
-                    System.out.println("[serveur][" +socketIOClient.getSessionId()+"]> Carte : " + c.getNomCarte()
+                    aff.afficher("[serveur][" +socketIOClient.getSessionId()+"]> Carte : " + c.getNomCarte()
                             + ";" + c.getPointsCarte());
                 }
-                /*
-                // TODO: Encore a remplacer par une fonction / eviter dupliqués
-                // Recuperation des cartes non utilisés par le client
-                JSONArray cartesRecues = new JSONArray(s);
-                decksCirculants.get(0).clear();
-                for(int i=0;i<6;i++){
-                    String nomCarte = cartesRecues.getJSONObject(i).getString("nomCarte");
-                    int nbPointsCarte = cartesRecues.getJSONObject(i).getInt("pointsCarte");
-                    Carte carte = new Carte(nomCarte, nbPointsCarte);
-                    decksCirculants.get(0).add(carte);
-                    System.out.println("Carte #" + i + " : " + decksCirculants.get(0).get(i).getNomCarte()
-                            + ";" + decksCirculants.get(0).get(i).getPointsCarte());
-                }
-                */
-
-
             }
         });
     }
@@ -140,15 +130,18 @@ public class Serveur {
      * Méthode qui lance la partie
      */
     private void lancerPartie() {
+        int numJoueur = 1;
         for(SocketIOClient client: listeClients) {
 
-        	client.sendEvent("msgDebutPartie");
-        	System.out.println("Client connecté");
+        	aff.afficher("Client connecté");
 
-        	//k k
+        	ArrayList<Object> infosJoueur = new ArrayList<Object>();
+        	infosJoueur.add(choisirCouleur());
+        	infosJoueur.add(numJoueur);
+            client.sendEvent("infosJoueur",infosJoueur);
+            //client.sendEvent("msgDebutPartie");
 
             //Envoyer du JSON (cartes)
-            //JSONObject carteJSON = new JSONObject(new Carte("TestCarte",9000));
             JSONArray cartesCourantesJSON = new JSONArray();
 
             // TODO : Faudrait creer un envoyer tour a tour a chaque client afin de faire circuler le paquet
@@ -156,16 +149,11 @@ public class Serveur {
                 JSONObject carte = new JSONObject(uneCarte);
                 cartesCourantesJSON.put(carte);
             }
-            //System.out.println(decksCirculants.toString());
-
-
 
             client.sendEvent("lancerPartie");
-
-            //System.out.println("CarteTest : " + carteJSON.toString());
-            System.out.println("Deck : " + cartesCourantesJSON.toString());
-        	//client.sendEvent("envoyerCarte", carteJSON.toString());
         	client.sendEvent("envoyerCarte", cartesCourantesJSON.toString());
+
+        	numJoueur++;
 
         }
     }
@@ -186,23 +174,45 @@ public class Serveur {
         }
         for(ArrayList<Carte> deck : decksCirculants){
             for(int i=0;i<7; i++){
-                deck.add(new Carte("Carte"+(i+1),(int)(Math.random()*200)));
+                ArrayList<Ressource> ressources = new ArrayList<Ressource>();
+                ressources.add(new Ressource("Bois",5));
+                ressources.add(new Ressource("Pierre",3));
+                deck.add(new Carte("Carte"+(i+1),(int)(Math.random()*200),3,ressources));
             }
         }
     }
 
+    // TODO: TEST UNITAIRE A FAIRE
     /**
      * Méthode qui initialise les plateaux
      */
     private void initialiserPleateaux(){
         for(int i=0;i<7;i++){
             // Generer les merveilles de manière aléatoire NB + POINTS
-            //ArrayList<Merveille>
+            ArrayList<Merveille> merveillesPlateau = new ArrayList<Merveille>();
 
+            // Génération d'un nombre de Merveilles aléatoire
+            int nbMerveilleRand = (int)(Math.random()*4);
+            for(int j=0;j<nbMerveilleRand;j++){
+                merveillesPlateau.add(new Merveille((int)(Math.random()*20)));
+            }
 
             String nomPlateau = "plateau"+(i+1);
-            //Plateau plateau+(i+1) = new Plateau();
+            Plateau plt = new Plateau(merveillesPlateau,nomPlateau,new Ressource("Pierre",5));
+
+            // A changer par une sous liste de plateaux si les face A/B sont gérés
+            plateauxDistribuables.add(plt);
         }
+    }
+
+    /**
+     * Méthode qui choisit une couleur au hasard parmi celles disponibles
+     */
+    public String choisirCouleur(){
+        int rand = (int)Math.random()*(couleursDispo.size()-1);
+        String couleurChoisie = couleursDispo.get(rand);
+        couleursDispo.remove(rand);
+        return couleurChoisie;
     }
 
 }

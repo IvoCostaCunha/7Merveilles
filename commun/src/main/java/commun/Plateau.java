@@ -23,14 +23,14 @@ public class Plateau {
      * Constructeur de la classe Plateau avec ajoute à la création des Merveilles
      * @param nomPlateau nom du plateau
      * @param ressourcePlateau ressource contenue dans le plateau
-     * @param niveauMerveillesMax niveau max de merveilles ex: pour un plateau a 3 merveilles
+     * @param niveauMerveillesMax niveau max de merveilles ex:  3 pour un plateau a 3 merveilles
      * @param listeMerveilles ArrayList des Merveilles du Plateau
      */
-    public Plateau(ArrayList<Merveille> listeMerveilles,String nomPlateau, Ressource ressourcePlateau, int niveauMerveillesMax){
+    public Plateau(ArrayList<Merveille> listeMerveilles,String nomPlateau, Ressource ressourcePlateau){
         this.nomPlateau = nomPlateau;
         this.ressourcePlateau = ressourcePlateau;
         this.listeMerveilles = listeMerveilles;
-        this.niveauMerveilleMax = niveauMerveillesMax;
+        this.niveauMerveilleMax = listeMerveilles.size();
         this.niveauMerveilleActuel = 0;
     }
 

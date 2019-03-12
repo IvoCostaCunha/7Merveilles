@@ -64,6 +64,10 @@
 
 - Plusieurs types de cartes
 
+#### Maj 08/03/2019
+
+- Fonctionnalitées non faites précédantes
+
 ### Itération 5 - 27/03/2019
 
 #### Fonctionnalités prévues

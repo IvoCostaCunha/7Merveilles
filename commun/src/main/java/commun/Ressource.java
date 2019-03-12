@@ -33,7 +33,7 @@ public class Ressource {
     }
 
     /*---------- Geteurs ----------*/
-    private String getNomRessource(){ return nomRessource; }
+    public String getNomRessource(){ return nomRessource; }
     public int getNbRessource(){ return nbRessource; }
 
     /**
