@@ -16,7 +16,6 @@ public class Carte {
     private int prixCartePieces;
     private ArrayList<Ressource> prixCarteRessources;
 
-
     /**
      * Constructeur de la carte Classe
      */

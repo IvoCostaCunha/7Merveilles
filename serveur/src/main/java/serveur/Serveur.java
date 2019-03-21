@@ -83,6 +83,10 @@ public class Serveur {
         });
     }
 
+    public ArrayList<Plateau> getPlateauxDistribuables()
+    {
+        return plateauxDistribuables;
+    }
     /* ----------- méthode main ----------- */
 
     public static final void main(String []args) {
@@ -163,6 +167,7 @@ public class Serveur {
      */
     private void initialisationElementsJeu(){
         initialisationDecksCirculants();
+        initialiserPleateaux();
     }
 
     /**
