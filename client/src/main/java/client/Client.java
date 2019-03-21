@@ -129,10 +129,13 @@ public class Client {
 
                         cartesClientCourrantes = deckCourantClient;
 
-                        aff.afficher("Le joueur a recu les cartes : " + cartesClientCourrantes);
+                        aff.afficher("Le joueur a recu les cartes : ");// + cartesClientCourrantes);
+                        for(Carte c : cartesClientCourrantes) {
+                            c.getNomCarte();
+                        }
                         Carte carteJoue = choisirCarte();
 
-                        aff.afficher("Le joueur a joué la carte "
+                        aff.afficher("Le joueur a joue la carte "
                                         + carteJoue.getNomCarte()
                                         + " qui vaut " + carteJoue.getPointsCarte() + " points");
 

@@ -67,7 +67,7 @@ public class Serveur extends Thread {
         serveur.addConnectListener(new ConnectListener() {
             public synchronized void onConnect(SocketIOClient socketIOClient) {
                 connexionClient(socketIOClient);
-                if(nbJoueurs == 4){ // A changer. 4 en version normale
+                if(nbJoueurs == 4){ 
                     lancerPartie();
                 }
             }
@@ -76,14 +76,14 @@ public class Serveur extends Thread {
         serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
-                aff.afficher("client id " + socketIOClient.getSessionId() + " : cartesRenvoyées : " + cartes);
                 decksCirculants.get(0).clear();
-                for (Carte c : cartes) {
-                    aff.afficher(socketIOClient.getSessionId() + "> Carte : " + c.getNomCarte()
-                            + ";" + c.getPointsCarte());
-
+                aff.afficher("L'id du client : " + socketIOClient.getSessionId());
+                for(Carte c : cartes) {
+                    aff.afficher("Nom de la carte : " + c.getNomCarte() + " - " + c.getPointsCarte() + "pts");
                     decksCirculants.get(positionCirculation).add(c);
 
+                }            
+            
                     // Ici le but est de debloquer le thread et de porsuivre lorsque le client retourne une liste
                     // de cartes après en avoir choisi une
 
@@ -91,8 +91,7 @@ public class Serveur extends Thread {
                     //aff.afficher("Thread delock par le client ID " + socketIOClient.getSessionId());
 
                 }
-            }
-        });
+         });
 
 
 
