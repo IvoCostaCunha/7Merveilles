@@ -32,7 +32,17 @@
     </build>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>SeptMerveilles</groupId>
+            <artifactId>commun</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

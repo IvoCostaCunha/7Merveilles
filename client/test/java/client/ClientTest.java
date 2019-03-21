@@ -15,9 +15,9 @@ public class ClientTest {
     public void testInitialisationRessources(){
         Client c = new Client("http://127.0.0.1:557");
         Ressource r1, r2, r3;
-        r1 = c.getRessourcesJoueur().get(0);
-        r2 = c.getRessourcesJoueur().get(1);
-        r3 = c.getRessourcesJoueur().get(2);
+        r1 = c.getRessourcesClient().get(0);
+        r2 = c.getRessourcesClient().get(1);
+        r3 = c.getRessourcesClient().get(2);
 
         Ressource tr1 = new Ressource("Bois",0);
         Ressource tr2 = new Ressource("Or",0);
@@ -29,7 +29,7 @@ public class ClientTest {
     @Test void testObtenirRessource(){
         Client c = new Client("http://127.0.0.1:557");
         c.obtenirRessource(new Ressource("Bois",1));
-        assertEquals(1,c.getRessourcesJoueur().get(0).getNbRessource());
+        assertEquals(1,c.getRessourcesClient().get(0).getNbRessource());
     }
 
     @Test
@@ -50,10 +50,10 @@ public class ClientTest {
         Client cl1 = new Client("http://127.0.0.1:557");
         Client cl2 = new Client("http://127.0.0.1:557");
 
-        cl1.setCartesJoueurCourrantes(listeCartes);
+        cl1.setCartesClientCourrantes(listeCartes);
         Carte c1 = cl1.choisirCarte();
 
-        cl2.setCartesJoueurCourrantes(cl1.renvoyerCartes());
+        cl2.setCartesClientCourrantes(cl1.renvoyerCartes());
         Carte c2 = cl2.choisirCarte();
 
         assertEquals(5,cl2.renvoyerCartes().size());
@@ -68,10 +68,10 @@ public class ClientTest {
         Client cl1 = new Client("http://127.0.0.1:557");
         Client cl2 = new Client("http://127.0.0.1:557");
 
-        cl1.setCartesJoueurCourrantes(listeCartes);
+        cl1.setCartesClientCourrantes(listeCartes);
         Carte c1 = cl1.choisirCarte();
 
-        cl2.setCartesJoueurCourrantes(cl2.renvoyerCartes());
+        cl2.setCartesClientCourrantes(cl2.renvoyerCartes());
         Carte c2 = cl1.choisirCarte();
 
         assertFalse(c1.equals(c2));
@@ -83,7 +83,7 @@ public class ClientTest {
         Client c = new Client("http://127.0.0.1:557");
         Carte carteTest = new Carte("test",420);
         c.ajouterCarteUtilisee(carteTest);
-        assertTrue(carteTest.equals(c.getCarteJoueurUtilisees().get(0)));
+        assertTrue(carteTest.equals(c.getCarteClientUtilisees().get(0)));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ClientTest {
 
         cl2.choisirPlateau(cl1.choisirPlateau(listePlateau));
 
-        assertNotEquals(cl2.getPlateauJoueur(),cl1.getPlateauJoueur());
+        assertNotEquals(cl2.getPlateauClient(),cl1.getPlateauClient());
     }
 
 
@@ -117,10 +117,10 @@ public class ClientTest {
         }
 
         c.choisirPlateau(listePlateau);
-        c.getPlateauJoueur().ajouterMerveille(new Merveille(12));
-        c.setCartesJoueurCourrantes(listeCartes);
+        c.getPlateauClient().ajouterMerveille(new Merveille(12));
+        c.setCartesClientCourrantes(listeCartes);
         c.jouer();
 
-        assertTrue((c.getPlateauJoueur().getNiveauDeMerveilleActuel() > 0) || (c.getPoints() > 0));
+        assertTrue((c.getPlateauClient().getNiveauDeMerveilleActuel() > 0) || (c.getPoints() > 0));
     }
 }

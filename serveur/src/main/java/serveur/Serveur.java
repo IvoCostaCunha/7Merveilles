@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import commun.*;
 import outils.*;
@@ -22,7 +24,9 @@ import outils.*;
  * attend une connexion, on envoie une question puis on attend une réponse, jusqu'à la découverte de la bonne réponse
  * le client s'identifie (som, niveau)
  */
-public class Serveur {
+public class Serveur extends Thread {
+
+    private Lock lock = new ReentrantLock();
 
     private SocketIOServer serveur;
     private final Object attenteConnexion = new Object();
@@ -31,9 +35,11 @@ public class Serveur {
     private int nbJoueurs = 0;
     private ArrayList<SocketIOClient> listeClients = new ArrayList<SocketIOClient>();
 
-    /* ---------- Elements de jeu initiaux ---------- */
-    private ArrayList<ArrayList<Carte>> decksCirculants = new ArrayList<ArrayList<Carte>>();
+    /*---------- Infos sur les cartes ----------*/
+    private int positionCirculation = 0;
 
+    /* ---------- Elements de jeu initiaux ---------- */
+    private final ArrayList<ArrayList<Carte>> decksCirculants = new ArrayList<ArrayList<Carte>>();
     // A changer par une sous liste de plateaux si les face A/B sont gérés
     private ArrayList<Plateau> plateauxDistribuables = new ArrayList<Plateau>();
 
@@ -45,7 +51,7 @@ public class Serveur {
      * Constructeur de la classe serveur
      * @param config objet de configuration du serveur
      */
-    public Serveur(Configuration config) {
+    public Serveur(Configuration config){
 
         // creation du serveur
         serveur = new SocketIOServer(config);
@@ -59,28 +65,53 @@ public class Serveur {
 
         // on accepte les connexions
         serveur.addConnectListener(new ConnectListener() {
-            public void onConnect(SocketIOClient socketIOClient) {
-                aff.afficher("Une connexion effectuee");
-                int id = incrementerNbJoueurs(socketIOClient);
-	        	donnerNbJoueurs(socketIOClient, id);
-                aff.afficher("connexion du client numero " + id);
-	        	if(id == 4) { // A changer. 4 en version normale
-	        		lancerPartie(); 
-	        	}
+            public synchronized void onConnect(SocketIOClient socketIOClient) {
+                connexionClient(socketIOClient);
+                if(nbJoueurs == 4){ // A changer. 4 en version normale
+                    lancerPartie();
+                }
             }
         });
 
-        /* ---------- Listenners ---------- */
+        serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
+            @Override
+            public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
+                aff.afficher("client id " + socketIOClient.getSessionId() + " : cartesRenvoyées : " + cartes);
+                decksCirculants.get(0).clear();
+                for (Carte c : cartes) {
+                    aff.afficher(socketIOClient.getSessionId() + "> Carte : " + c.getNomCarte()
+                            + ";" + c.getPointsCarte());
+
+                    decksCirculants.get(positionCirculation).add(c);
+
+                    // Ici le but est de debloquer le thread et de porsuivre lorsque le client retourne une liste
+                    // de cartes après en avoir choisi une
+
+                    //lock.unlock();
+                    //aff.afficher("Thread delock par le client ID " + socketIOClient.getSessionId());
+
+                }
+            }
+        });
+
+
+
+
+        /* ---------- Listenners ----------
         serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
                 aff.afficher("cartesRenvoyées : "+cartes);
+                decksCirculants.get(0).clear();
                 for(Carte c : cartes) {
-                    aff.afficher("[serveur][" +socketIOClient.getSessionId()+"]> Carte : " + c.getNomCarte()
+                    aff.afficher("[" +socketIOClient.getSessionId()+"]> Carte : " + c.getNomCarte()
                             + ";" + c.getPointsCarte());
+
+                    decksCirculants.get(0).add(c);
                 }
+                lock.unlock();
             }
-        });
+        });*/
     }
 
     /* ----------- méthode main ----------- */
@@ -106,14 +137,24 @@ public class Serveur {
         serveur.start();
     }
 
-    public synchronized int incrementerNbJoueurs(SocketIOClient socketIOClient) {
-        nbJoueurs++;
-        listeClients.add(socketIOClient);
+    public int getNbJoueur() {
         return nbJoueurs;
     }
 
-    public int getNbJoueur() {
-        return nbJoueurs;
+    private synchronized void connexionClient(SocketIOClient socketIOClient){
+        ArrayList<Object> infosJoueur = new ArrayList<Object>();
+        infosJoueur.add(choisirCouleur());
+        infosJoueur.add(nbJoueurs+1);
+        socketIOClient.sendEvent("infosJoueur", infosJoueur);
+
+        donnerNbJoueurs(socketIOClient, nbJoueurs);
+
+
+        aff.afficher("connexion du client numero " + (nbJoueurs+1) + "; ID : " + socketIOClient.getSessionId());
+
+        nbJoueurs++;
+
+        listeClients.add(socketIOClient);
     }
 
 
@@ -122,47 +163,46 @@ public class Serveur {
      * @param socketIOClient Objet socketIOClient a qui envoyer
      * @param nbJoueurs le nb de joueurs
      */
-    private void donnerNbJoueurs(SocketIOClient socketIOClient, int nbJoueurs) {
+    private void donnerNbJoueurs(SocketIOClient socketIOClient, int nbJoueurs){
         socketIOClient.sendEvent("nbJoueurs", nbJoueurs);
     }
 
     /**
      * Méthode qui lance la partie
      */
-    private void lancerPartie() {
-        int numJoueur = 1;
-        for(SocketIOClient client: listeClients) {
+    private synchronized void lancerPartie() {
 
-        	aff.afficher("Client connecté");
+        for(int i=0;i<6;i++){
+            for(SocketIOClient client: listeClients){
 
-        	ArrayList<Object> infosJoueur = new ArrayList<Object>();
-        	infosJoueur.add(choisirCouleur());
-        	infosJoueur.add(numJoueur);
-            client.sendEvent("infosJoueur",infosJoueur);
-            //client.sendEvent("msgDebutPartie");
+                client.sendEvent("lancerPartie");
+                client.sendEvent("envoyerCarte", decksCirculants.get(positionCirculation));
 
-            //Envoyer du JSON (cartes)
-            JSONArray cartesCourantesJSON = new JSONArray();
+                // On reset la circulation des decks quand un tour a été fait
+                if(positionCirculation == nbJoueurs-1){
+                    positionCirculation = 1;
+                }
+                else{ positionCirculation++; }
 
-            // TODO : Faudrait creer un envoyer tour a tour a chaque client afin de faire circuler le paquet
-            for(Carte uneCarte : decksCirculants.get(0)){
-                JSONObject carte = new JSONObject(uneCarte);
-                cartesCourantesJSON.put(carte);
+
+                //aff.afficher("Thread lock par le client ID : " + client.getSessionId());
+                //aff.afficher(lock.toString());
+
+                // Utilisation de semaphore pour stopper le thread jusqu'a que le serveur est reçu la confirmation que le
+                // client a bien joué son rôle durant le tour
+
+                // lock.lock();
             }
-
-            client.sendEvent("lancerPartie");
-        	client.sendEvent("envoyerCarte", cartesCourantesJSON.toString());
-
-        	numJoueur++;
-
         }
     }
+
 
     /**
      * Méthode qui instancie TOUS éléments de jeu initiaux
      */
     private void initialisationElementsJeu(){
         initialisationDecksCirculants();
+        initialiserPlateaux();
     }
 
     /**
@@ -186,7 +226,7 @@ public class Serveur {
     /**
      * Méthode qui initialise les plateaux
      */
-    private void initialiserPleateaux(){
+    private void initialiserPlateaux(){
         for(int i=0;i<7;i++){
             // Generer les merveilles de manière aléatoire NB + POINTS
             ArrayList<Merveille> merveillesPlateau = new ArrayList<Merveille>();

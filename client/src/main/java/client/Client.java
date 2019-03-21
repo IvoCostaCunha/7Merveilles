@@ -24,20 +24,20 @@ public class Client {
 
     // PARTIE RESEAU
     private Socket connexion;
-    private ArrayList<Joueur> listeJoueursClient = new ArrayList<Joueur>();
+    private ArrayList<Client> listeJoueursClient = new ArrayList<Client>();
 
     Affichage aff = new Affichage();
 
     // ATTRIBUTS CLIENT
     private String nom;
-    private int numJoueur;
-    private String couleurJoueur;
+    private int numClient;
+    private String couleurClient;
     private int points;
     private int pieces;
-    private Plateau plateauJoueur;
-    private ArrayList<Ressource> ressourcesJoueur = new ArrayList<Ressource>();
-    private ArrayList<Carte> cartesJoueurCourrantes =  new ArrayList<Carte>();
-    private ArrayList<Carte> carteJoueurUtilisees = new ArrayList<Carte>();
+    private Plateau plateauClient;
+    private ArrayList<Ressource> ressourcesClient = new ArrayList<Ressource>();
+    private ArrayList<Carte> cartesClientCourrantes =  new ArrayList<Carte>();
+    private ArrayList<Carte> carteClientUtilisees = new ArrayList<Carte>();
 
 
     // Objet de synchro
@@ -64,6 +64,7 @@ public class Client {
 
             points = 0;
             pieces = 3;
+            initialiserRessourcesClient();
 
             connexion = IO.socket(ipServeur);
 
@@ -73,14 +74,13 @@ public class Client {
             connexion.on("infosJoueur", new Emitter.Listener() {
                 @Override
                 synchronized public void call(Object... objects) {
-                    JSONArray infosJoueurJSON = (JSONArray)objects[0];
-                    ArrayList<String> infosJoueur = new ArrayList<String>();
+                    JSONArray infosClientJSON = (JSONArray)objects[0];
                     try{
-                        couleurJoueur = infosJoueurJSON.get(0).toString();
-                        numJoueur = Integer.parseInt(infosJoueurJSON.get(1).toString());
-                        aff.setCouleur(couleurJoueur);
-                        aff = new Affichage(couleurJoueur,"JOUEUR " + numJoueur + " -> ");
-                        aff.afficher("Couleur attribuee : " + couleurJoueur);
+                        couleurClient = infosClientJSON.get(0).toString();
+                        numClient = Integer.parseInt(infosClientJSON.get(1).toString());
+                        aff.setCouleur(couleurClient);
+                        aff = new Affichage(couleurClient,"JOUEUR " + numClient + " -> ");
+                        aff.afficher("Couleur attribuee : " + couleurClient);
                     }
                     catch (Exception e){ System.out.println(e.toString()); }
 
@@ -115,26 +115,33 @@ public class Client {
                 public void call(Object... objects) {
                     //System.out.println("carte : " + objects[0]);
                     //String strCarteTest = (String) objects[0];
-                    String strDeckCourant = (String) objects[0];
+                    //String strDeckCourant = (String) objects[0];
                     try{
-                        JSONArray deckCourantJSONArray = new JSONArray(strDeckCourant);
-                        ArrayList<Carte> deckCourantJoueur = new ArrayList<Carte>(7);
-                        for(int i=0;i<7;i++){
+                        JSONArray deckCourantJSONArray = (JSONArray)objects[0];
+                        ArrayList<Carte> deckCourantClient = new ArrayList<Carte>();
+
+                        for(int i=0;i<deckCourantJSONArray.length();i++){
                             JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
                             Carte objCarte = new Carte(carteJSON.getString("nomCarte"),carteJSON.getInt("pointsCarte"));
-                            deckCourantJoueur.add(objCarte);
+                            deckCourantClient.add(objCarte);
                         }
-                        cartesJoueurCourrantes = deckCourantJoueur;
+
+
+                        cartesClientCourrantes = deckCourantClient;
+
+                        aff.afficher("Le joueur a recu les cartes : " + cartesClientCourrantes);
                         Carte carteJoue = choisirCarte();
+
                         aff.afficher("Le joueur a joué la carte "
                                         + carteJoue.getNomCarte()
                                         + " qui vaut " + carteJoue.getPointsCarte() + " points");
+
                         aff.afficher("Le joueur a " + getPieces() + " pieces");
 
                         JSONArray cartesRenvoyerJSONArray = new JSONArray();
 
-                        // TODO: faut en faire une fonction dans une classe du genre Util.OutilsJSON.java qui permettrait d'eviter le code dupliqué
-                        for(Carte uneCarte : cartesJoueurCourrantes){
+                        // TODO: On peut eviter de passer par le JSONArray peut etre comme ailleurs
+                        for(Carte uneCarte : cartesClientCourrantes){
                             JSONObject carte = new JSONObject(uneCarte);
                             cartesRenvoyerJSONArray.put(carte);
                         }
@@ -167,27 +174,27 @@ public class Client {
     /**
      * Méthode qui initialise la liste des ressources joueur a 0
      */
-    private void initialiserRessourcesJoueur(){
-        ressourcesJoueur.add(new Ressource("Bois",0));
-        ressourcesJoueur.add(new Ressource("Or",0));
-        ressourcesJoueur.add(new Ressource("Pierre",0));
-        ressourcesJoueur.add(new Ressource("Brique",0));
-        ressourcesJoueur.add(new Ressource("Verre",0));
-        ressourcesJoueur.add(new Ressource("Papyrus",0));
-        ressourcesJoueur.add(new Ressource("Minerai",0));
+    private void initialiserRessourcesClient(){
+        ressourcesClient.add(new Ressource("Bois",0));
+        ressourcesClient.add(new Ressource("Or",0));
+        ressourcesClient.add(new Ressource("Pierre",0));
+        ressourcesClient.add(new Ressource("Brique",0));
+        ressourcesClient.add(new Ressource("Verre",0));
+        ressourcesClient.add(new Ressource("Papyrus",0));
+        ressourcesClient.add(new Ressource("Minerai",0));
     }
 
     /**
-     * Fonction qui ajoute une Ressource a un Joueur
+     * Fonction qui ajoute une Ressource a un Client
      * @param uneRessource la ressource a rajouter
      * @return true si tout s'est bien passé / false sinon
      */
     public Boolean obtenirRessource(Ressource uneRessource){
         Boolean verif = false;
 
-        for(Ressource uneRessourceJoueur : ressourcesJoueur){
-            if(uneRessourceJoueur.estDeMemeType(uneRessource)){
-                uneRessourceJoueur.incrementerRessource(uneRessource.getNbRessource());
+        for(Ressource uneRessourceClient: ressourcesClient){
+            if(uneRessourceClient.estDeMemeType(uneRessource)){
+                uneRessourceClient.incrementerRessource(uneRessource.getNbRessource());
                 verif = true;
             }
         }
@@ -202,16 +209,16 @@ public class Client {
     public void ajouterPoints(int nbPoints) { this.points += nbPoints; }
 
     /**
-     * Méthode qui permet au Joueur de construire une Merveille
+     * Méthode qui permet au Client de construire une Merveille
      * @param uneCarte carte utilisé pour construire la Merveille
      * @return true si pas de pb / false sinon
      */
     public Boolean construireMerveille(Carte uneCarte)
     {
         Boolean verif = false;
-        if(plateauJoueur.construireMerveilleSuivante(uneCarte)){
-            aff.afficher("Le joueur a construit la Merveille niveau" + plateauJoueur.getNiveauDeMerveilleActuel());
-            int pointsRajouter = plateauJoueur.getListeMerveilles().get(plateauJoueur.getNiveauDeMerveilleActuel()-1).getPointsMerveille();
+        if(plateauClient.construireMerveilleSuivante(uneCarte)){
+            aff.afficher("Le joueur a construit la Merveille niveau" + plateauClient.getNiveauDeMerveilleActuel());
+            int pointsRajouter = plateauClient.getListeMerveilles().get(plateauClient.getNiveauDeMerveilleActuel()-1).getPointsMerveille();
             this.ajouterPoints(pointsRajouter);
             verif = true;
         }
@@ -224,16 +231,16 @@ public class Client {
      */
     public void ajouterCarteUtilisee(Carte uneCarte){
         ajouterPoints(uneCarte.getPointsCarte());
-        carteJoueurUtilisees.add(uneCarte);
+        carteClientUtilisees.add(uneCarte);
     }
 
     /**
      * Methode qui permet au joueur de choisir une carte de manière aléatoire
      */
     public Carte choisirCarte(){
-        int rand = (int)(Math.random()* cartesJoueurCourrantes.size()-1);
-        Carte carteChoisie = cartesJoueurCourrantes.get(rand);
-        cartesJoueurCourrantes.remove(rand);
+        int rand = (int)(Math.random()* cartesClientCourrantes.size()-1);
+        Carte carteChoisie = cartesClientCourrantes.get(rand);
+        cartesClientCourrantes.remove(rand);
         return carteChoisie;
     }
 
@@ -264,7 +271,7 @@ public class Client {
      * @return la liste des cartes qui seront renvoyés a la suite des joueurs pour le tour
      */
     public ArrayList<Carte> renvoyerCartes(){
-        return cartesJoueurCourrantes;
+        return cartesClientCourrantes;
     }
 
     /**
@@ -274,22 +281,22 @@ public class Client {
      */
     public ArrayList<Plateau> choisirPlateau(ArrayList<Plateau> listePlateau){
         int rand = (int)(Math.random()*listePlateau.size()-1);
-        this.plateauJoueur = listePlateau.get(rand);
+        this.plateauClient = listePlateau.get(rand);
         listePlateau.remove(rand);
         return listePlateau;
     }
 
     /*---------- Seteurs ----------*/
-    public void setCartesJoueurCourrantes(ArrayList<Carte> cartesJoueurCourrantes) { this.cartesJoueurCourrantes = cartesJoueurCourrantes; }
+    public void setCartesClientCourrantes(ArrayList<Carte> cartesClientCourrantes) { this.cartesClientCourrantes = cartesClientCourrantes; }
 
 
     /*---------- Geteurs ----------*/
-    public ArrayList<Ressource> getRessourcesJoueur() { return ressourcesJoueur; }
+    public ArrayList<Ressource> getRessourcesClient() { return ressourcesClient; }
     public int getPoints() { return points; }
-    public ArrayList<Carte> getCarteJoueurUtilisees() { return carteJoueurUtilisees; }
-    public Plateau getPlateauJoueur() { return plateauJoueur; }
+    public ArrayList<Carte> getCarteClientUtilisees() { return carteClientUtilisees; }
+    public Plateau getPlateauClient() { return plateauClient; }
     public int getPieces() { return pieces; }
 
     // TODO: Provisoire a enlever plus tard
-    public ArrayList<Carte> getCartesJoueurCourrantes() { return cartesJoueurCourrantes; }
+    public ArrayList<Carte> getCartesClientCourrantes() { return cartesClientCourrantes; }
 }

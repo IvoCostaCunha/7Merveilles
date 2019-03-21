@@ -64,12 +64,6 @@
             <artifactId>outils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!-- Pas besoin de cette dependance désormais
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
-        </dependency>-->
     </dependencies>
 
 </project>
