@@ -16,7 +16,7 @@ public class Partie {
         s.démarrer();
 
         /* Instanciations des clients en cas normal */
-        Client [] c = new Client[4];
+        Client [] c = new Client[2];
         for(int i = 0; i < c.length; i++)  {
             c[i] = new Client("http://127.0.0.1:557");
             c[i].seConnecter();

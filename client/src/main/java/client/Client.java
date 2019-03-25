@@ -34,6 +34,7 @@ public class Client {
     private String couleurClient;
     private int points;
     private int pieces;
+    private String plateauClientNom;
     private Plateau plateauClient;
     private ArrayList<Ressource> ressourcesClient = new ArrayList<Ressource>();
     private ArrayList<Carte> cartesClientCourrantes =  new ArrayList<Carte>();
@@ -78,9 +79,12 @@ public class Client {
                     try{
                         couleurClient = infosClientJSON.get(0).toString();
                         numClient = Integer.parseInt(infosClientJSON.get(1).toString());
+                        plateauClientNom = infosClientJSON.get(2).toString();
                         aff.setCouleur(couleurClient);
                         aff = new Affichage(couleurClient,"JOUEUR " + numClient + " -> ");
                         aff.afficher("Couleur attribuee : " + couleurClient);
+                        aff.afficher("Plateau attribue : " + plateauClientNom);
+                        
                     }
                     catch (Exception e){ System.out.println(e.toString()); }
 
@@ -129,19 +133,20 @@ public class Client {
 
                         cartesClientCourrantes = deckCourantClient;
 
-                        aff.afficher("Le joueur a recu les cartes : ");// + cartesClientCourrantes);
+                        /*aff.afficher("Le joueur a recu les cartes : ");// + cartesClientCourrantes);
                         for(Carte c : cartesClientCourrantes) {
                             c.getNomCarte();
-                        }
+                        }*/
                         Carte carteJoue = choisirCarte();
 
                         aff.afficher("Le joueur a joue la carte "
                                         + carteJoue.getNomCarte()
                                         + " qui vaut " + carteJoue.getPointsCarte() + " points");
 
-                        aff.afficher("Le joueur a " + getPieces() + " pieces");
+                        /*aff.afficher("Le joueur a " + getPieces() + " pieces");
 
                         JSONArray cartesRenvoyerJSONArray = new JSONArray();
+                        
 
                         // TODO: On peut eviter de passer par le JSONArray peut etre comme ailleurs
                         for(Carte uneCarte : cartesClientCourrantes){
@@ -150,7 +155,7 @@ public class Client {
                         }
 
                         connexion.emit("renvoieCartes",cartesRenvoyerJSONArray);
-
+*/
 
 
                     }
@@ -219,6 +224,7 @@ public class Client {
     public Boolean construireMerveille(Carte uneCarte)
     {
         Boolean verif = false;
+
         if(plateauClient.construireMerveilleSuivante(uneCarte)){
             aff.afficher("Le joueur a construit la Merveille niveau" + plateauClient.getNiveauDeMerveilleActuel());
             int pointsRajouter = plateauClient.getListeMerveilles().get(plateauClient.getNiveauDeMerveilleActuel()-1).getPointsMerveille();
@@ -246,6 +252,7 @@ public class Client {
         cartesClientCourrantes.remove(rand);
         return carteChoisie;
     }
+
 
     /**
      * Méthode qui détermine la facon de jouer la carte du bot 50% de utiliser la carte / 50% de chance de constsuire la

@@ -35,6 +35,8 @@ public class Serveur extends Thread {
     private int nbJoueurs = 0;
     private ArrayList<SocketIOClient> listeClients = new ArrayList<SocketIOClient>();
 
+    private int plateauxDistrib = 0;
+
     /*---------- Infos sur les cartes ----------*/
     private int positionCirculation = 0;
 
@@ -67,7 +69,7 @@ public class Serveur extends Thread {
         serveur.addConnectListener(new ConnectListener() {
             public synchronized void onConnect(SocketIOClient socketIOClient) {
                 connexionClient(socketIOClient);
-                if(nbJoueurs == 4){ 
+                if(nbJoueurs == 2){ 
                     lancerPartie();
                 }
             }
@@ -77,9 +79,9 @@ public class Serveur extends Thread {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
                 decksCirculants.get(0).clear();
-                aff.afficher("L'id du client : " + socketIOClient.getSessionId());
+                //aff.afficher("L'id du client : " + socketIOClient.getSessionId());
                 for(Carte c : cartes) {
-                    aff.afficher("Nom de la carte : " + c.getNomCarte() + " - " + c.getPointsCarte() + "pts");
+                    //aff.afficher("Nom de la carte : " + c.getNomCarte() + " - " + c.getPointsCarte() + "pts");
                     decksCirculants.get(positionCirculation).add(c);
 
                 }            
@@ -148,6 +150,7 @@ public class Serveur extends Thread {
         ArrayList<Object> infosJoueur = new ArrayList<Object>();
         infosJoueur.add(choisirCouleur());
         infosJoueur.add(nbJoueurs+1);
+        infosJoueur.add(choisirPlateau());
         socketIOClient.sendEvent("infosJoueur", infosJoueur);
 
         donnerNbJoueurs(socketIOClient, nbJoueurs);
@@ -173,12 +176,26 @@ public class Serveur extends Thread {
     /**
      * Méthode qui lance la partie
      */
-    private synchronized void lancerPartie() {
+    private  void lancerPartie() {
+        aff.afficher("Le jeu commence : ");
+        for(SocketIOClient client: listeClients){
 
-        for(int i=0;i<6;i++){
+            client.sendEvent("jouerTour");
+            client.sendEvent("envoyerCarte", decksCirculants.get(positionCirculation));
+
+            if(positionCirculation == nbJoueurs-1){
+                positionCirculation = 1;
+            }
+            else{ positionCirculation++; }
+        }
+    }
+
+
+    private  void jouerTour() {
+
             for(SocketIOClient client: listeClients){
 
-                client.sendEvent("lancerPartie");
+                client.sendEvent("jouerTour");
                 client.sendEvent("envoyerCarte", decksCirculants.get(positionCirculation));
 
                 // On reset la circulation des decks quand un tour a été fait
@@ -187,7 +204,6 @@ public class Serveur extends Thread {
                 }
                 else{ positionCirculation++; }
 
-
                 //aff.afficher("Thread lock par le client ID : " + client.getSessionId());
                 //aff.afficher(lock.toString());
 
@@ -195,7 +211,7 @@ public class Serveur extends Thread {
                 // client a bien joué son rôle durant le tour
 
                 // lock.lock();
-            }
+            
         }
     }
 
@@ -220,7 +236,7 @@ public class Serveur extends Thread {
                 ArrayList<Ressource> ressources = new ArrayList<Ressource>();
                 ressources.add(new Ressource("Bois",5));
                 ressources.add(new Ressource("Pierre",3));
-                deck.add(new Carte("Carte"+(i+1),(int)(Math.random()*200),3,ressources));
+                deck.add(new Carte("Carte"+(i+1),(int)(Math.random()*20),3,ressources));
             }
         }
     }
@@ -231,21 +247,24 @@ public class Serveur extends Thread {
      */
     private void initialiserPlateaux(){
         for(int i=0;i<7;i++){
-            // Generer les merveilles de manière aléatoire NB + POINTS
-            ArrayList<Merveille> merveillesPlateau = new ArrayList<Merveille>();
-
-            // Génération d'un nombre de Merveilles aléatoire
-            int nbMerveilleRand = (int)(Math.random()*4);
-            for(int j=0;j<nbMerveilleRand;j++){
-                merveillesPlateau.add(new Merveille((int)(Math.random()*20)));
+            int nbMerveilles = 1 + (int)(Math.random() * 5); //Combien de merveille pour le plateau ?
+            ArrayList<Merveille> listeMerveilles = new ArrayList<>();
+            for(int j = nbMerveilles; j<nbMerveilles; j++) {
+                Merveille nouvMerveille = new Merveille(j);
+                listeMerveilles.add(nouvMerveille);
             }
+            String nomPlateau = "plateau" + i; //Nom du plateau
 
-            String nomPlateau = "plateau"+(i+1);
-            Plateau plt = new Plateau(merveillesPlateau,nomPlateau,new Ressource("Pierre",5));
+            Plateau plt = new Plateau(listeMerveilles, nomPlateau, new Ressource("Pierre",5));
 
             // A changer par une sous liste de plateaux si les face A/B sont gérés
             plateauxDistribuables.add(plt);
         }
+    }
+
+    private String choisirPlateau() {
+        plateauxDistrib++;
+        return plateauxDistribuables.get(plateauxDistrib-1).getNomPlateau();
     }
 
     /**
@@ -256,6 +275,16 @@ public class Serveur extends Thread {
         String couleurChoisie = couleursDispo.get(rand);
         couleursDispo.remove(rand);
         return couleurChoisie;
+    }
+
+    public Plateau getPlateauByName(String nom) {
+        Plateau pTrouve = null;
+        for(Plateau p : plateauxDistribuables) {
+            if(p.getNomPlateau() == nom) {
+                pTrouve = p;
+            }
+        }
+        return pTrouve;
     }
 
 }
