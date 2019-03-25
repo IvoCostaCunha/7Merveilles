@@ -75,6 +75,11 @@ public class Serveur extends Thread {
             }
         });
 
+        // le joueur renvoie la carte qu'il joue // (ou qu'il défausse) // (ou etape de merveille)
+        // on retire la carte jouee de la main du joueur
+        // on compte un coup de jouer en plus
+        // si le nb de coup joues vaut le nombre de joueur ET qu'il reste 2 cartes par joueurs => on change de tour => jouerTour
+        // si le nb de coup joues vaut le nombre de joueur ET qu'il reste 1 carte par joueurs => fin de l'age
         serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
@@ -178,31 +183,42 @@ public class Serveur extends Thread {
      */
     private  void lancerPartie() {
         aff.afficher("Le jeu commence : ");
-        for(SocketIOClient client: listeClients){
+        setNbCoupsJoues(0);
+        jouerTour();
+    }
 
-            client.sendEvent("jouerTour");
-            client.sendEvent("envoyerCarte", decksCirculants.get(positionCirculation));
 
-            if(positionCirculation == nbJoueurs-1){
-                positionCirculation = 1;
-            }
-            else{ positionCirculation++; }
-        }
+    private synchronized void setNbCoupsJoues(int nb) {
+
+        // propriete a creer
+        this.nbJoues = 0;
+
     }
 
 
     private  void jouerTour() {
+
+        // On reset la circulation des decks quand un tour a été fait
+        // faire tourner les mains / decks
+        /*
+        if(positionCirculation == nbJoueurs-1){
+            positionCirculation = 1;
+        }
+        else{ positionCirculation++; }
+        */
+
+
+        // associer SocketIOClient et la main
+        // classe Participant : SocketIOClient, Main, Merveille, ses cartes Jouees...
+
+        // pour chaque participant, on envoie ses cartes
 
             for(SocketIOClient client: listeClients){
 
                 client.sendEvent("jouerTour");
                 client.sendEvent("envoyerCarte", decksCirculants.get(positionCirculation));
 
-                // On reset la circulation des decks quand un tour a été fait
-                if(positionCirculation == nbJoueurs-1){
-                    positionCirculation = 1;
-                }
-                else{ positionCirculation++; }
+                
 
                 //aff.afficher("Thread lock par le client ID : " + client.getSessionId());
                 //aff.afficher(lock.toString());
