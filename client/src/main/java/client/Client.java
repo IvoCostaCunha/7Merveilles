@@ -87,7 +87,6 @@ public class Client {
                         
                     }
                     catch (Exception e){ System.out.println(e.toString()); }
-
                 }
             });
 
@@ -130,7 +129,6 @@ public class Client {
                             deckCourantClient.add(objCarte);
                         }
 
-
                         cartesClientCourrantes = deckCourantClient;
 
                         /*aff.afficher("Le joueur a recu les cartes : ");// + cartesClientCourrantes);
@@ -143,20 +141,10 @@ public class Client {
                                         + carteJoue.getNomCarte()
                                         + " qui vaut " + carteJoue.getPointsCarte() + " points");
 
-                        /*aff.afficher("Le joueur a " + getPieces() + " pieces");
+                        /*aff.afficher("Le joueur a " + getPieces() + " pieces");*/
 
-                        JSONArray cartesRenvoyerJSONArray = new JSONArray();
-                        
 
-                        // TODO: On peut eviter de passer par le JSONArray peut etre comme ailleurs
-                        for(Carte uneCarte : cartesClientCourrantes){
-                            JSONObject carte = new JSONObject(uneCarte);
-                            cartesRenvoyerJSONArray.put(carte);
-                        }
-
-                        connexion.emit("renvoieCartes",cartesRenvoyerJSONArray);
-*/
-
+                        connexion.emit("renvoieCarte", new JSONObject(carteJoue));
 
                     }
                     catch (JSONException e){ System.out.println(e.toString()); }

@@ -31,9 +31,11 @@ public class Serveur extends Thread {
     private SocketIOServer serveur;
     private final Object attenteConnexion = new Object();
 
+    private int nbJoues;
+
     /* ---------- Infos clients connectés ---------- */
     private int nbJoueurs = 0;
-    private ArrayList<SocketIOClient> listeClients = new ArrayList<SocketIOClient>();
+    private ArrayList<Participant> listeClients = new ArrayList<>();
 
     private int plateauxDistrib = 0;
 
@@ -69,6 +71,8 @@ public class Serveur extends Thread {
         serveur.addConnectListener(new ConnectListener() {
             public synchronized void onConnect(SocketIOClient socketIOClient) {
                 connexionClient(socketIOClient);
+
+                
                 if(nbJoueurs == 2){ 
                     lancerPartie();
                 }
@@ -80,44 +84,33 @@ public class Serveur extends Thread {
         // on compte un coup de jouer en plus
         // si le nb de coup joues vaut le nombre de joueur ET qu'il reste 2 cartes par joueurs => on change de tour => jouerTour
         // si le nb de coup joues vaut le nombre de joueur ET qu'il reste 1 carte par joueurs => fin de l'age
-        serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
+        serveur.addEventListener("renvoieCarte", Carte.class, new DataListener<Carte>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
-                decksCirculants.get(0).clear();
-                //aff.afficher("L'id du client : " + socketIOClient.getSessionId());
-                for(Carte c : cartes) {
-                    //aff.afficher("Nom de la carte : " + c.getNomCarte() + " - " + c.getPointsCarte() + "pts");
-                    decksCirculants.get(positionCirculation).add(c);
+            public void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
+                
+                Participant p =  retrouverParticipant(socketIOClient);
 
-                }            
-            
-                    // Ici le but est de debloquer le thread et de porsuivre lorsque le client retourne une liste
-                    // de cartes après en avoir choisi une
+                System.out.println(p.nb+ " a joue "+carte);
 
-                    //lock.unlock();
-                    //aff.afficher("Thread delock par le client ID " + socketIOClient.getSessionId());
-
-                }
-         });
-
-
-
-
-        /* ---------- Listenners ----------
-        serveur.addEventListener("renvoieCartes", Carte[].class, new DataListener<Carte[]>() {
-            @Override
-            public void onData(SocketIOClient socketIOClient, Carte[] cartes, AckRequest ackRequest) throws Exception {
-                aff.afficher("cartesRenvoyées : "+cartes);
-                decksCirculants.get(0).clear();
-                for(Carte c : cartes) {
-                    aff.afficher("[" +socketIOClient.getSessionId()+"]> Carte : " + c.getNomCarte()
-                            + ";" + c.getPointsCarte());
-
-                    decksCirculants.get(0).add(c);
-                }
-                lock.unlock();
+                p.cartes.remove(carte);
+                // ... 
             }
-        });*/
+         });
+    }
+
+
+    Participant retrouverParticipant(SocketIOClient s) {
+        Participant j = null;
+
+        for(Participant p : listeClients) {
+            if (p.client.getRemoteAddress().toString().equals(s.getRemoteAddress().toString())) {
+                j = p;
+                break;
+            }
+        }
+
+
+        return j;
     }
 
     public ArrayList<Plateau> getPlateauxDistribuables()
@@ -152,20 +145,29 @@ public class Serveur extends Thread {
     }
 
     private synchronized void connexionClient(SocketIOClient socketIOClient){
+
+
+        Participant p = new Participant();
+
         ArrayList<Object> infosJoueur = new ArrayList<Object>();
-        infosJoueur.add(choisirCouleur());
-        infosJoueur.add(nbJoueurs+1);
-        infosJoueur.add(choisirPlateau());
+        p.couleur = choisirCouleur();
+        infosJoueur.add(p.couleur);
+        p.nb = nbJoueurs+1;
+        infosJoueur.add(p.nb);
+        p.plateau = choisirPlateau();
+        infosJoueur.add(p.plateau);
         socketIOClient.sendEvent("infosJoueur", infosJoueur);
 
         donnerNbJoueurs(socketIOClient, nbJoueurs);
 
+            p.client = socketIOClient;
 
         aff.afficher("connexion du client numero " + (nbJoueurs+1) + "; ID : " + socketIOClient.getSessionId());
 
         nbJoueurs++;
 
-        listeClients.add(socketIOClient);
+
+        listeClients.add(p);
     }
 
 
@@ -184,20 +186,22 @@ public class Serveur extends Thread {
     private  void lancerPartie() {
         aff.afficher("Le jeu commence : ");
         setNbCoupsJoues(0);
+        
+        for(int i = 0;  i < listeClients.size(); i++ ){
+            listeClients.get(i).cartes = decksCirculants.get(i);
+        }
+
         jouerTour();
     }
 
 
     private synchronized void setNbCoupsJoues(int nb) {
-
-        // propriete a creer
-        this.nbJoues = 0;
-
+        this.nbJoues = nb;
     }
 
 
     private  void jouerTour() {
-
+        positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
         // faire tourner les mains / decks
         /*
@@ -213,10 +217,10 @@ public class Serveur extends Thread {
 
         // pour chaque participant, on envoie ses cartes
 
-            for(SocketIOClient client: listeClients){
+            for(Participant client: listeClients){
 
-                client.sendEvent("jouerTour");
-                client.sendEvent("envoyerCarte", decksCirculants.get(positionCirculation));
+                client.client.sendEvent("jouerTour");
+                client.client.sendEvent("envoyerCarte", client.cartes);
 
                 
 
