@@ -2,6 +2,8 @@ package serveur;
 
 import java.awt.*;
 import java.util.ArrayList;
+
+import com.corundumstudio.socketio.SocketIOClient;
 import serveur.*;
 import commun.*;
 import outils.*;
@@ -68,4 +70,11 @@ public class ServeurTest {
             assertEquals(listePlateaux.get(i).getNomPlateau(),listePlateauxDistribuables.get(i).getNomPlateau());
         }
     }
+    /*
+    @Test
+    public void testRetrouverParticipant()
+    {
+        SocketIOClient s = new SocketIOClient();
+        }
+    }*/
 }
