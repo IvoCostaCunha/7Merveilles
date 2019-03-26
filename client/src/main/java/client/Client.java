@@ -137,9 +137,9 @@ public class Client {
                         }*/
                         Carte carteJoue = choisirCarte();
 
-                        aff.afficher("Le joueur a joue la carte "
+                        /*aff.afficher("Le joueur a joue la carte "
                                         + carteJoue.getNomCarte()
-                                        + " qui vaut " + carteJoue.getPointsCarte() + " points");
+                                        + " qui vaut " + carteJoue.getPointsCarte() + " points");*/
 
                         /*aff.afficher("Le joueur a " + getPieces() + " pieces");*/
 

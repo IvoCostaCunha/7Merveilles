@@ -79,4 +79,18 @@ public class Carte {
     public int getPointsCarte() { return pointsCarte; }
     public int getPrixCartePieces() { return prixCartePieces; }
     public ArrayList<Ressource> getPrixCarteRessources(){ return prixCarteRessources; }
+
+
+    public String toString() {
+        return "Carte";
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof Carte) {
+            Carte c = (Carte) o;
+
+            return true;
+        }
+        return false;
+    }
 }

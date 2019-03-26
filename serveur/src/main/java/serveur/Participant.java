@@ -9,11 +9,9 @@ public class Participant {
     public String couleur;
     public String plateau;
     public int nb;
+    public int nbPts;
 
     public SocketIOClient client;
 
     public ArrayList<Carte> cartes;
-
-
-
 }

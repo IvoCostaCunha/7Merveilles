@@ -1,4 +1,6 @@
-﻿# exclusion des dossiers contenant les élements générés
+﻿**/.vscode/
+
+# exclusion des dossiers contenant les élements générés
 **/out/
 **/target/
 **/build/

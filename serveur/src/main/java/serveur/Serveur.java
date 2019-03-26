@@ -47,7 +47,7 @@ public class Serveur extends Thread {
     // A changer par une sous liste de plateaux si les face A/B sont gérés
     private ArrayList<Plateau> plateauxDistribuables = new ArrayList<Plateau>();
 
-    private Affichage aff = new Affichage("BLUE","SERVEUR -> ");
+    private Affichage aff = new Affichage("YELLOW","SERVEUR -> ");
 
     ArrayList<String> couleursDispo;
 
@@ -87,15 +87,27 @@ public class Serveur extends Thread {
         serveur.addEventListener("renvoieCarte", Carte.class, new DataListener<Carte>() {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
-                
                 Participant p =  retrouverParticipant(socketIOClient);
+                aff.setCouleur(p.couleur);
+                aff.afficher("Le joueur num" + p.nb + " a joue " + carte.getNomCarte().toString());
+                p.nb += carte.getPointsCarte();
+                aff.setCouleur("YELLOW");
+                aff.afficher("le joueur a " + p.nbPts + " points");
 
-                System.out.println(p.nb+ " a joue "+carte);
-
-                p.cartes.remove(carte);
-                // ... 
-            }
+                if(nbJoues == nbJoueurs && p.cartes.size() == 2) {
+                    jouerTour();
+                }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
+                    finDeLAge();
+                }
+                    p.cartes.remove(carte);
+                    nbJoues++;
+                }
+            
          });
+    }
+
+    public void finDeLAge() {
+        aff.afficher("- L'age est terminé -");
     }
 
 
@@ -152,20 +164,22 @@ public class Serveur extends Thread {
         ArrayList<Object> infosJoueur = new ArrayList<Object>();
         p.couleur = choisirCouleur();
         infosJoueur.add(p.couleur);
+
         p.nb = nbJoueurs+1;
         infosJoueur.add(p.nb);
+
         p.plateau = choisirPlateau();
         infosJoueur.add(p.plateau);
+
         socketIOClient.sendEvent("infosJoueur", infosJoueur);
 
         donnerNbJoueurs(socketIOClient, nbJoueurs);
 
-            p.client = socketIOClient;
+        p.client = socketIOClient;
 
         aff.afficher("connexion du client numero " + (nbJoueurs+1) + "; ID : " + socketIOClient.getSessionId());
 
         nbJoueurs++;
-
 
         listeClients.add(p);
     }
@@ -184,11 +198,16 @@ public class Serveur extends Thread {
      * Méthode qui lance la partie
      */
     private  void lancerPartie() {
-        aff.afficher("Le jeu commence : ");
+        aff.afficher("Le jeu commence, les cartes sont distribuees : ");
         setNbCoupsJoues(0);
-        
-        for(int i = 0;  i < listeClients.size(); i++ ){
-            listeClients.get(i).cartes = decksCirculants.get(i);
+
+        for(int i = 0; i < listeClients.size(); i++ ){
+            Participant p = listeClients.get(i);
+            p.cartes = decksCirculants.get(i);
+            aff.afficher("Liste des cartes distribuees pour le joueur num" + p.nb);
+            for(Carte c : p.cartes) {
+                aff.afficher(c.getNomCarte() + " qui vaut " + c.getPointsCarte());
+            }
         }
 
         jouerTour();
@@ -201,15 +220,18 @@ public class Serveur extends Thread {
 
 
     private  void jouerTour() {
+        aff.setCouleur("YELLOW");
+        aff.afficher("- Tour numero " + nbJoues + " -");
         positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
         // faire tourner les mains / decks
-        /*
+        
         if(positionCirculation == nbJoueurs-1){
             positionCirculation = 1;
+            System.out.println("test");
         }
         else{ positionCirculation++; }
-        */
+        
 
 
         // associer SocketIOClient et la main
@@ -218,21 +240,12 @@ public class Serveur extends Thread {
         // pour chaque participant, on envoie ses cartes
 
             for(Participant client: listeClients){
-
                 client.client.sendEvent("jouerTour");
-                client.client.sendEvent("envoyerCarte", client.cartes);
-
-                
-
-                //aff.afficher("Thread lock par le client ID : " + client.getSessionId());
-                //aff.afficher(lock.toString());
-
-                // Utilisation de semaphore pour stopper le thread jusqu'a que le serveur est reçu la confirmation que le
-                // client a bien joué son rôle durant le tour
-
-                // lock.lock();
-            
+                client.client.sendEvent("envoyerCarte", client.cartes);            
         }
+
+            System.out.println(nbJoues);
+        
     }
 
 

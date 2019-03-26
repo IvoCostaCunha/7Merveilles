@@ -1,3 +1,3 @@
 netstat -a -n -o
 
-taskkill -f /pid + pid de l'adresse concerné
+taskkill -f /pid + pid de l'adresse concernée
