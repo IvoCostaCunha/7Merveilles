@@ -5,6 +5,7 @@ import commun.Carte;
 import java.util.ArrayList;
 
 public class Participant {
+    //Mettre en prive et faire getteurs et setteurs
 
     public String couleur;
     public String plateau;

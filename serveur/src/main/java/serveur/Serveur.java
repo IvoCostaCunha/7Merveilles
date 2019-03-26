@@ -31,7 +31,7 @@ public class Serveur extends Thread {
     private SocketIOServer serveur;
     private final Object attenteConnexion = new Object();
 
-    private int nbJoues;
+    private int nbJoues = 0;
 
     /* ---------- Infos clients connectés ---------- */
     private int nbJoueurs = 0;
@@ -72,8 +72,7 @@ public class Serveur extends Thread {
             public synchronized void onConnect(SocketIOClient socketIOClient) {
                 connexionClient(socketIOClient);
 
-                
-                if(nbJoueurs == 2){ 
+                if(nbJoueurs == 2) { // == nb de joueurs qu'on veut
                     lancerPartie();
                 }
             }
@@ -94,14 +93,19 @@ public class Serveur extends Thread {
                 aff.setCouleur("YELLOW");
                 aff.afficher("le joueur a " + p.nbPts + " points");
 
-                if(nbJoues == nbJoueurs && p.cartes.size() == 2) {
+                if(nbJoues == nbJoueurs && p.cartes.size() == 2) { //Comprend pas la logique
                     jouerTour();
                 }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
                     finDeLAge();
                 }
-                    p.cartes.remove(carte);
-                    nbJoues++;
+
+                p.cartes.remove(carte);
+                nbJoues++;
+                System.out.println("nbJoues = " + nbJoues);
+                if(nbJoues == nbJoueurs) {
+                    System.out.println("On change de tour ?");
                 }
+            }
             
          });
     }
@@ -196,8 +200,8 @@ public class Serveur extends Thread {
 
     /**
      * Méthode qui lance la partie
-     */
-    private  void lancerPartie() {
+    */
+    private void lancerPartie() {
         aff.afficher("Le jeu commence, les cartes sont distribuees : ");
         setNbCoupsJoues(0);
 
@@ -208,8 +212,8 @@ public class Serveur extends Thread {
             for(Carte c : p.cartes) {
                 aff.afficher(c.getNomCarte() + " qui vaut " + c.getPointsCarte());
             }
+            System.out.println("\n\n");
         }
-
         jouerTour();
     }
 
@@ -220,6 +224,8 @@ public class Serveur extends Thread {
 
 
     private  void jouerTour() {
+        nbJoues++;
+
         aff.setCouleur("YELLOW");
         aff.afficher("- Tour numero " + nbJoues + " -");
         positionCirculation = 0;
@@ -228,7 +234,6 @@ public class Serveur extends Thread {
         
         if(positionCirculation == nbJoueurs-1){
             positionCirculation = 1;
-            System.out.println("test");
         }
         else{ positionCirculation++; }
         
@@ -244,8 +249,6 @@ public class Serveur extends Thread {
                 client.client.sendEvent("envoyerCarte", client.cartes);            
         }
 
-            System.out.println(nbJoues);
-        
     }
 
 
