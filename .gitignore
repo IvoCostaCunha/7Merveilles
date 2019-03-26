@@ -26,13 +26,17 @@
 
 
 
-#pour Eclipse
+# pour Eclipse
 **/.project
 **/.classpath
 **/.settings/
 # les dossiers du workspace eclipse... normalement pas dans le git, à adapter au besoin
 **/.metadata/
 **/.recommanders/
+
+# pour VS Code
+**/.vscode
+
 
 # pour les mac...
 **/.DS_Store
