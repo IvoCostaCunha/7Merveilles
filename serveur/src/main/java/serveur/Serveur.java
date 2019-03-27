@@ -45,6 +45,8 @@ public class Serveur {
 
     ArrayList<String> couleursDispo;
 
+    private int nbTours = 0;
+
     /**
      * Constructeur de la classe serveur
      * @param config objet de configuration du serveur
@@ -84,20 +86,17 @@ public class Serveur {
                 aff.setCouleur(p.getCouleur());
                 aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
                 p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
-                //aff.setCouleur("YELLOW");
                 aff.afficher("Le joueur num" + p.getNb() + " a " + p.getNbPts() + " points");
 
                 if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
+                    System.out.println("On change de tour");
+                    nbJoues = 0;
                     jouerTour();
                 }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
                     finDeLAge();
                 }
 
                 p.cartes.remove(carte);
-                System.out.println("nbJoues = " + nbJoues);
-                if(nbJoues == nbJoueurs) {
-                    System.out.println("On change de tour ?");
-                }
                 nbJoues++;
             }
             
@@ -220,15 +219,15 @@ public class Serveur {
 
     private  void jouerTour() {
         aff.setCouleur("YELLOW");
-        aff.afficher("- Tour numero " + nbJoues + " -");
+        aff.afficher("- Tour numero " + nbTours + " -");
         positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
         // faire tourner les mains / decks
         
-        if(positionCirculation == nbJoueurs-1){
+       /* if(positionCirculation == nbJoueurs-1){
             positionCirculation = 1;
         }
-        else{ positionCirculation++; }
+        else{ positionCirculation++; }*/
         
 
 
@@ -241,7 +240,8 @@ public class Serveur {
                 //client.client.sendEvent("jouerTour");
                 client.client.sendEvent("envoyerCarte", client.cartes);            
         }
-        nbJoues = 0;
+        //nbJoues = 0;
+        nbTours++;
     }
 
 
