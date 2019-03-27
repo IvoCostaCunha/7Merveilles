@@ -245,7 +245,7 @@ public class Serveur extends Thread {
         // pour chaque participant, on envoie ses cartes
 
             for(Participant client: listeClients){
-                client.client.sendEvent("jouerTour");
+                //client.client.sendEvent("jouerTour");
                 client.client.sendEvent("envoyerCarte", client.cartes);            
         }
 
