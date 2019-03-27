@@ -87,11 +87,12 @@ public class Serveur extends Thread {
             @Override
             public void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p =  retrouverParticipant(socketIOClient);
-                aff.setCouleur(p.couleur);
-                aff.afficher("Le joueur num" + p.nb + " a joue " + carte.getNomCarte().toString());
-                p.nb += carte.getPointsCarte();
+                aff.setCouleur(p.getCouleur());
+                aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
+                //p.nb += carte.getPointsCarte();
+                p.setNbPts(p.getNb()+ carte.getPointsCarte());
                 aff.setCouleur("YELLOW");
-                aff.afficher("le joueur a " + p.nbPts + " points");
+                aff.afficher("le joueur a " + p.getNbPts() + " points");
 
                 if(nbJoues == nbJoueurs && p.cartes.size() == 2) { //Comprend pas la logique
                     jouerTour();
@@ -166,14 +167,15 @@ public class Serveur extends Thread {
         Participant p = new Participant();
 
         ArrayList<Object> infosJoueur = new ArrayList<Object>();
-        p.couleur = choisirCouleur();
-        infosJoueur.add(p.couleur);
+        p.setCouleur(choisirCouleur());
+                infosJoueur.add(p.getCouleur());
 
-        p.nb = nbJoueurs+1;
-        infosJoueur.add(p.nb);
+        //p.nb = nbJoueurs+1;
+        p.setNb(nbJoueurs+1);
+        infosJoueur.add(p.getNb());
 
-        p.plateau = choisirPlateau();
-        infosJoueur.add(p.plateau);
+        p.setPlateau(choisirPlateau());
+        infosJoueur.add(p.getPlateau());
 
         socketIOClient.sendEvent("infosJoueur", infosJoueur);
 
@@ -208,7 +210,7 @@ public class Serveur extends Thread {
         for(int i = 0; i < listeClients.size(); i++ ){
             Participant p = listeClients.get(i);
             p.cartes = decksCirculants.get(i);
-            aff.afficher("Liste des cartes distribuees pour le joueur num" + p.nb);
+            aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
                 aff.afficher(c.getNomCarte() + " qui vaut " + c.getPointsCarte());
             }
