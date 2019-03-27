@@ -97,7 +97,6 @@ public class Serveur {
                 }
 
                 p.cartes.remove(carte);
-                nbJoues++;
             }
             
          });
@@ -238,7 +237,9 @@ public class Serveur {
 
             for(Participant client: listeClients){
                 //client.client.sendEvent("jouerTour");
-                client.client.sendEvent("envoyerCarte", client.cartes);            
+                client.client.sendEvent("envoyerCarte", client.cartes);
+                System.out.println("nbJoues=" + nbJoues);
+                nbJoues++;            
         }
         //nbJoues = 0;
         nbTours++;
