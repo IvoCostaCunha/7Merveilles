@@ -7,15 +7,10 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import commun.Carte;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import commun.*;
 import outils.*;
@@ -24,9 +19,7 @@ import outils.*;
  * attend une connexion, on envoie une question puis on attend une réponse, jusqu'à la découverte de la bonne réponse
  * le client s'identifie (som, niveau)
  */
-public class Serveur extends Thread {
-
-    private Lock lock = new ReentrantLock();
+public class Serveur {
 
     private SocketIOServer serveur;
     private final Object attenteConnexion = new Object();
@@ -35,6 +28,7 @@ public class Serveur extends Thread {
 
     /* ---------- Infos clients connectés ---------- */
     private int nbJoueurs = 0;
+    private int nbJoueursDistrib = 0; //Nombre de decks distribues
     private ArrayList<Participant> listeClients = new ArrayList<>();
 
     private int plateauxDistrib = 0;
@@ -85,27 +79,26 @@ public class Serveur extends Thread {
         // si le nb de coup joues vaut le nombre de joueur ET qu'il reste 1 carte par joueurs => fin de l'age
         serveur.addEventListener("renvoieCarte", Carte.class, new DataListener<Carte>() {
             @Override
-            public void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
-                Participant p =  retrouverParticipant(socketIOClient);
+            public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
+                Participant p = retrouverParticipant(socketIOClient);
                 aff.setCouleur(p.getCouleur());
                 aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
-                //p.nb += carte.getPointsCarte();
-                p.setNbPts(p.getNb()+ carte.getPointsCarte());
-                aff.setCouleur("YELLOW");
-                aff.afficher("le joueur a " + p.getNbPts() + " points");
+                p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
+                //aff.setCouleur("YELLOW");
+                aff.afficher("Le joueur num" + p.getNb() + " a " + p.getNbPts() + " points");
 
-                if(nbJoues == nbJoueurs && p.cartes.size() == 2) { //Comprend pas la logique
+                if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
                     jouerTour();
                 }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
                     finDeLAge();
                 }
 
                 p.cartes.remove(carte);
-                nbJoues++;
                 System.out.println("nbJoues = " + nbJoues);
                 if(nbJoues == nbJoueurs) {
                     System.out.println("On change de tour ?");
                 }
+                nbJoues++;
             }
             
          });
@@ -226,8 +219,6 @@ public class Serveur extends Thread {
 
 
     private  void jouerTour() {
-        nbJoues++;
-
         aff.setCouleur("YELLOW");
         aff.afficher("- Tour numero " + nbJoues + " -");
         positionCirculation = 0;
@@ -250,7 +241,7 @@ public class Serveur extends Thread {
                 //client.client.sendEvent("jouerTour");
                 client.client.sendEvent("envoyerCarte", client.cartes);            
         }
-
+        nbJoues = 0;
     }
 
 
@@ -270,11 +261,12 @@ public class Serveur extends Thread {
             decksCirculants.add(new ArrayList<Carte>(7));
         }
         for(ArrayList<Carte> deck : decksCirculants){
+            nbJoueursDistrib++;
             for(int i=0;i<7; i++){
                 ArrayList<Ressource> ressources = new ArrayList<Ressource>();
                 ressources.add(new Ressource("Bois",5));
                 ressources.add(new Ressource("Pierre",3));
-                deck.add(new Carte("Carte"+(i+1),(int)(Math.random()*20),3,ressources));
+                deck.add(new Carte("Carte"+ nbJoueursDistrib + "-" +(i+1),(int)(Math.random()*20),3,ressources));
             }
         }
     }

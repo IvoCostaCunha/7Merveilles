@@ -235,9 +235,9 @@ public class Client {
      * Methode qui permet au joueur de choisir une carte de manière aléatoire
      */
     public Carte choisirCarte(){
-        int rand = (int)(Math.random()* cartesClientCourrantes.size()-1);
-        Carte carteChoisie = cartesClientCourrantes.get(rand);
-        cartesClientCourrantes.remove(rand);
+        //int rand = (int)(Math.random()* cartesClientCourrantes.size()-1);
+        Carte carteChoisie = cartesClientCourrantes.get(0); //Choisir la première carte
+        cartesClientCourrantes.remove(0);
         return carteChoisie;
     }
 
