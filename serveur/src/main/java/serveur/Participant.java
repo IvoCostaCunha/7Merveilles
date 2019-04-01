@@ -1,7 +1,7 @@
 package serveur;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import commun.Carte;
+import commun.*;
 import java.util.ArrayList;
 
 public class Participant {

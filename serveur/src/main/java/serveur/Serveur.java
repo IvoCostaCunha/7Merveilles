@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import commun.*;
 import outils.*;
+import moteur.*;
 
 /**
  * attend une connexion, on envoie une question puis on attend une réponse, jusqu'à la découverte de la bonne réponse
@@ -22,6 +23,8 @@ import outils.*;
 public class Serveur {
 
     private SocketIOServer serveur;
+    private Moteur moteur = new Moteur();
+
     private final Object attenteConnexion = new Object();
 
     private int nbJoues = 0;
@@ -36,14 +39,10 @@ public class Serveur {
     /*---------- Infos sur les cartes ----------*/
     private int positionCirculation = 0;
 
-    /* ---------- Elements de jeu initiaux ---------- */
-    private final ArrayList<ArrayList<Carte>> decksCirculants = new ArrayList<ArrayList<Carte>>();
-    // A changer par une sous liste de plateaux si les face A/B sont gérés
-    private ArrayList<Plateau> plateauxDistribuables = new ArrayList<Plateau>();
+    // Le serveur est en bleu
+    private Affichage aff = new Affichage("BLUE","SERVEUR -> ");
 
-    private Affichage aff = new Affichage("YELLOW","SERVEUR -> ");
-
-    ArrayList<String> couleursDispo;
+    private ArrayList<String> couleursDispo;
 
     private int nbTours = 0;
 
@@ -55,9 +54,6 @@ public class Serveur {
 
         // creation du serveur
         serveur = new SocketIOServer(config);
-
-        //instanciation des éléments de jeu
-        this.initialisationElementsJeu();
 
         couleursDispo = aff.getCouleursDispo();
         // BLUE enlevé vu que c'est pour le serveur
@@ -121,10 +117,6 @@ public class Serveur {
         return j;
     }
 
-    public ArrayList<Plateau> getPlateauxDistribuables()
-    {
-        return plateauxDistribuables;
-    }
     /* ----------- méthode main ----------- */
 
     public static final void main(String []args) {
@@ -146,10 +138,6 @@ public class Serveur {
 
     public void démarrer() {
         serveur.start();
-    }
-
-    public int getNbJoueur() {
-        return nbJoueurs;
     }
 
     private synchronized void connexionClient(SocketIOClient socketIOClient){
@@ -200,7 +188,7 @@ public class Serveur {
 
         for(int i = 0; i < listeClients.size(); i++ ){
             Participant p = listeClients.get(i);
-            p.cartes = decksCirculants.get(i);
+            p.cartes = moteur.getMains().get(i);
             aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
                 aff.afficher(c.getNomCarte() + " qui vaut " + c.getPointsCarte());
@@ -249,53 +237,11 @@ public class Serveur {
     /**
      * Méthode qui instancie TOUS éléments de jeu initiaux
      */
-    private void initialisationElementsJeu(){
-        initialisationDecksCirculants();
-        initialiserPlateaux();
-    }
 
-    /**
-     * Méthode qui instancie les cecks circulants
-     */
-    private void initialisationDecksCirculants(){
-        for(int i=0;i<7;i++){
-            decksCirculants.add(new ArrayList<Carte>(7));
-        }
-        for(ArrayList<Carte> deck : decksCirculants){
-            nbJoueursDistrib++;
-            for(int i=0;i<7; i++){
-                ArrayList<Ressource> ressources = new ArrayList<Ressource>();
-                ressources.add(new Ressource("Bois",5));
-                ressources.add(new Ressource("Pierre",3));
-                deck.add(new Carte("Carte"+ nbJoueursDistrib + "-" +(i+1),(int)(Math.random()*20),3,ressources));
-            }
-        }
-    }
-
-    // TODO: TEST UNITAIRE A FAIRE
-    /**
-     * Méthode qui initialise les plateaux
-     */
-    private void initialiserPlateaux(){
-        for(int i=0;i<7;i++){
-            int nbMerveilles = 1 + (int)(Math.random() * 5); //Combien de merveille pour le plateau ?
-            ArrayList<Merveille> listeMerveilles = new ArrayList<>();
-            for(int j = nbMerveilles; j<nbMerveilles; j++) {
-                Merveille nouvMerveille = new Merveille(j);
-                listeMerveilles.add(nouvMerveille);
-            }
-            String nomPlateau = "plateau" + i; //Nom du plateau
-
-            Plateau plt = new Plateau(listeMerveilles, nomPlateau, new Ressource("Pierre",5));
-
-            // A changer par une sous liste de plateaux si les face A/B sont gérés
-            plateauxDistribuables.add(plt);
-        }
-    }
 
     private String choisirPlateau() {
         plateauxDistrib++;
-        return plateauxDistribuables.get(plateauxDistrib-1).getNomPlateau();
+        return moteur.getPlateaux().get(plateauxDistrib-1).getNomPlateau();
     }
 
     /**
@@ -310,12 +256,15 @@ public class Serveur {
 
     public Plateau getPlateauByName(String nom) {
         Plateau pTrouve = null;
-        for(Plateau p : plateauxDistribuables) {
+        for(Plateau p : moteur.getPlateaux()) {
             if(p.getNomPlateau() == nom) {
                 pTrouve = p;
             }
         }
         return pTrouve;
     }
+
+    /*-------------------- Geteurs --------------------*/
+
 
 }

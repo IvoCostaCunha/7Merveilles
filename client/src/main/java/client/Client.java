@@ -20,26 +20,18 @@ import java.util.ArrayList;
 // TODO: Faut arreter les clients si le serveur meurt, kill les processus ...
 
 
+/**
+ * Classe qui gère la partie réseau côté client
+ */
 public class Client {
 
-    // PARTIE RESEAU
     private Socket connexion;
     private ArrayList<Client> listeJoueursClient = new ArrayList<Client>();
 
+    Joueur j = new Joueur();
+
     Affichage aff = new Affichage();
-
-    // ATTRIBUTS CLIENT
-    private String nom;
-    private int numClient;
     private String couleurClient;
-    private int points;
-    private int pieces;
-    private String plateauClientNom;
-    private Plateau plateauClient;
-    private ArrayList<Ressource> ressourcesClient = new ArrayList<Ressource>();
-    private ArrayList<Carte> cartesClientCourrantes =  new ArrayList<Carte>();
-    private ArrayList<Carte> carteClientUtilisees = new ArrayList<Carte>();
-
 
     // Objet de synchro
     final Object attenteDéconnexion = new Object();
@@ -63,10 +55,6 @@ public class Client {
     public Client(String ipServeur) {
         try {
 
-            points = 0;
-            pieces = 3;
-            initialiserRessourcesClient();
-
             connexion = IO.socket(ipServeur);
 
             /*---------- Listenners ---------- */
@@ -78,13 +66,12 @@ public class Client {
                     JSONArray infosClientJSON = (JSONArray)objects[0];
                     try{
                         couleurClient = infosClientJSON.get(0).toString();
-                        numClient = Integer.parseInt(infosClientJSON.get(1).toString());
-                        plateauClientNom = infosClientJSON.get(2).toString();
+                        j.setNum(Integer.parseInt(infosClientJSON.get(1).toString()));
+                        j.setNomPlateau(infosClientJSON.get(2).toString());
                         aff.setCouleur(couleurClient);
-                        aff = new Affichage(couleurClient,"JOUEUR " + numClient + " -> ");
+                        aff = new Affichage(couleurClient,"JOUEUR " + j.getNum() + " -> ");
                         aff.afficher("Couleur attribuee : " + couleurClient);
-                        aff.afficher("Plateau attribue : " + plateauClientNom);
-                        
+                        aff.afficher("Plateau attribue : " + j.getNomPlateau());
                     }
                     catch (Exception e){ System.out.println(e.toString()); }
                 }
@@ -129,13 +116,13 @@ public class Client {
                             deckCourantClient.add(objCarte);
                         }
 
-                        cartesClientCourrantes = deckCourantClient;
+                        j.setMain(deckCourantClient);
 
                         /*aff.afficher("Le joueur a recu les cartes : ");// + cartesClientCourrantes);
                         for(Carte c : cartesClientCourrantes) {
                             c.getNomCarte();
                         }*/
-                        Carte carteJoue = choisirCarte();
+                        Carte carteJoue = j.choisirCarte();
 
                         /*aff.afficher("Le joueur a joue la carte "
                                         + carteJoue.getNomCarte()
@@ -166,135 +153,4 @@ public class Client {
         connexion.connect();
 
     }
-
-    /**
-     * Méthode qui initialise la liste des ressources joueur a 0
-     */
-    private void initialiserRessourcesClient(){
-        ressourcesClient.add(new Ressource("Bois",0));
-        ressourcesClient.add(new Ressource("Or",0));
-        ressourcesClient.add(new Ressource("Pierre",0));
-        ressourcesClient.add(new Ressource("Brique",0));
-        ressourcesClient.add(new Ressource("Verre",0));
-        ressourcesClient.add(new Ressource("Papyrus",0));
-        ressourcesClient.add(new Ressource("Minerai",0));
-    }
-
-    /**
-     * Fonction qui ajoute une Ressource a un Client
-     * @param uneRessource la ressource a rajouter
-     * @return true si tout s'est bien passé / false sinon
-     */
-    public Boolean obtenirRessource(Ressource uneRessource){
-        Boolean verif = false;
-
-        for(Ressource uneRessourceClient: ressourcesClient){
-            if(uneRessourceClient.estDeMemeType(uneRessource)){
-                uneRessourceClient.incrementerRessource(uneRessource.getNbRessource());
-                verif = true;
-            }
-        }
-
-        return verif;
-    }
-
-    /**
-     * Méthode qui incremente le nb de points d'un joueur
-     * @param nbPoints le nombre de points à rajouter
-     */
-    public void ajouterPoints(int nbPoints) { this.points += nbPoints; }
-
-    /**
-     * Méthode qui permet au Client de construire une Merveille
-     * @param uneCarte carte utilisé pour construire la Merveille
-     * @return true si pas de pb / false sinon
-     */
-    public Boolean construireMerveille(Carte uneCarte)
-    {
-        Boolean verif = false;
-
-        if(plateauClient.construireMerveilleSuivante(uneCarte)){
-            aff.afficher("Le joueur a construit la Merveille niveau" + plateauClient.getNiveauDeMerveilleActuel());
-            int pointsRajouter = plateauClient.getListeMerveilles().get(plateauClient.getNiveauDeMerveilleActuel()-1).getPointsMerveille();
-            this.ajouterPoints(pointsRajouter);
-            verif = true;
-        }
-        return verif;
-    }
-
-    /**
-     * Méthode qui rajoute une carte utilisé a la liste des cartes utilisées et rajoute les points de la carte au joueur
-     * @param uneCarte la carte utilisée
-     */
-    public void ajouterCarteUtilisee(Carte uneCarte){
-        ajouterPoints(uneCarte.getPointsCarte());
-        carteClientUtilisees.add(uneCarte);
-    }
-
-    /**
-     * Methode qui permet au joueur de choisir une carte de manière aléatoire
-     */
-    public Carte choisirCarte(){
-        //int rand = (int)(Math.random()* cartesClientCourrantes.size()-1);
-        Carte carteChoisie = cartesClientCourrantes.get(0); //Choisir la première carte
-        cartesClientCourrantes.remove(0);
-        return carteChoisie;
-    }
-
-
-    /**
-     * Méthode qui détermine la facon de jouer la carte du bot 50% de utiliser la carte / 50% de chance de constsuire la
-     * Merveille
-     */
-    public void jouer(){
-        int rand = (int)(Math.random()*10);
-        Carte carte = choisirCarte();
-        if(rand > 5){
-            ajouterPoints(carte.getPointsCarte());
-            ajouterCarteUtilisee(carte);
-        }
-        else{
-            if(!construireMerveille(carte)){
-                ajouterPoints(carte.getPointsCarte());
-                ajouterCarteUtilisee(carte);
-            }
-            else{
-                construireMerveille(carte);
-            }
-        }
-    }
-
-    /**
-     * Fonction qui renvoie la liste des cartes après que le joueur en ai pris une
-     * @return la liste des cartes qui seront renvoyés a la suite des joueurs pour le tour
-     */
-    public ArrayList<Carte> renvoyerCartes(){
-        return cartesClientCourrantes;
-    }
-
-    /**
-     * Méthode qui permet de choisir un plateau en début de partie parmi ceux restants
-     * @param listePlateau
-     * @return la liste des Plateau sans le Plateau choisi
-     */
-    public ArrayList<Plateau> choisirPlateau(ArrayList<Plateau> listePlateau){
-        int rand = (int)(Math.random()*listePlateau.size()-1);
-        this.plateauClient = listePlateau.get(rand);
-        listePlateau.remove(rand);
-        return listePlateau;
-    }
-
-    /*---------- Seteurs ----------*/
-    public void setCartesClientCourrantes(ArrayList<Carte> cartesClientCourrantes) { this.cartesClientCourrantes = cartesClientCourrantes; }
-
-
-    /*---------- Geteurs ----------*/
-    public ArrayList<Ressource> getRessourcesClient() { return ressourcesClient; }
-    public int getPoints() { return points; }
-    public ArrayList<Carte> getCarteClientUtilisees() { return carteClientUtilisees; }
-    public Plateau getPlateauClient() { return plateauClient; }
-    public int getPieces() { return pieces; }
-
-    // TODO: Provisoire a enlever plus tard
-    public ArrayList<Carte> getCartesClientCourrantes() { return cartesClientCourrantes; }
 }

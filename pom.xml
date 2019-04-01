@@ -14,6 +14,7 @@
         <module>client</module>
         <module>lanceur</module>
         <module>outils</module>
+        <module>moteur</module>
     </modules>
 
 	<packaging>pom</packaging>
