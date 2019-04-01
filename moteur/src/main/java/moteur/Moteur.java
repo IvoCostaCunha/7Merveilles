@@ -47,7 +47,7 @@ public class Moteur {
                 ArrayList<Ressource> ressources = new ArrayList<Ressource>();
                 ressources.add(new Ressource("Bois",5));
                 ressources.add(new Ressource("Pierre",3));
-                main.add(new Carte("Carte - "+ i+1,(int)(Math.random()*20),3,ressources));
+                main.add(new Carte("Carte - "+ (i+1),(int)(Math.random()*20),3,ressources));
             }
         }
     }

@@ -79,13 +79,12 @@ public class Serveur {
             @Override
             public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p = retrouverParticipant(socketIOClient);
-                aff.setCouleur(p.getCouleur());
                 aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
                 p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
                 aff.afficher("Le joueur num" + p.getNb() + " a " + p.getNbPts() + " points");
 
                 if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
-                    System.out.println("On change de tour");
+                    aff.afficher("-------------------- ! Changement de tour ! --------------------");
                     nbJoues = 0;
                     jouerTour();
                 }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
@@ -99,7 +98,7 @@ public class Serveur {
     }
 
     public void finDeLAge() {
-        aff.afficher("- L'age est terminé -");
+        aff.afficher("-------------------- ! L'age est terminé ! --------------------");
     }
 
 
@@ -205,7 +204,6 @@ public class Serveur {
 
 
     private  void jouerTour() {
-        aff.setCouleur("YELLOW");
         aff.afficher("- Tour numero " + nbTours + " -");
         positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
@@ -218,7 +216,7 @@ public class Serveur {
         
 
 
-        // associer SocketIOClient et la main
+        // associer SocketIOClient et la main ????????????????
         // classe Participant : SocketIOClient, Main, Merveille, ses cartes Jouees...
 
         // pour chaque participant, on envoie ses cartes
@@ -226,7 +224,7 @@ public class Serveur {
             for(Participant client: listeClients){
                 //client.client.sendEvent("jouerTour");
                 client.client.sendEvent("envoyerCarte", client.cartes);
-                System.out.println("nbJoues=" + nbJoues);
+                aff.afficher("nbJoues=" + nbJoues);
                 nbJoues++;            
         }
         //nbJoues = 0;

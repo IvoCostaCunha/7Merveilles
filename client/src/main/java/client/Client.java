@@ -69,9 +69,10 @@ public class Client {
                         j.setNum(Integer.parseInt(infosClientJSON.get(1).toString()));
                         j.setNomPlateau(infosClientJSON.get(2).toString());
                         aff.setCouleur(couleurClient);
-                        aff = new Affichage(couleurClient,"JOUEUR " + j.getNum() + " -> ");
+                        aff.setPrefix("JOUEUR " + j.getNum() + "->");
                         aff.afficher("Couleur attribuee : " + couleurClient);
-                        aff.afficher("Plateau attribue : " + j.getNomPlateau());
+                        // Faut deja choisir un plateau ...
+                        //aff.afficher("Plateau attribue : " + j.getNomPlateau());
                     }
                     catch (Exception e){ System.out.println(e.toString()); }
                 }
