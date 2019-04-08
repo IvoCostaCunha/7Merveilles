@@ -33,8 +33,10 @@ public class Client {
     Affichage aff = new Affichage();
     private String couleurClient;
 
-    // Objet de synchro
-    final Object attenteDéconnexion = new Object();
+    String getCouleur() {
+        return couleurClient;
+    }
+
 
     /* ---------- MAIN ---------- */
 
@@ -68,16 +70,15 @@ public class Client {
                         couleurClient = infosClientJSON.get(0).toString();
                         j.setNum(Integer.parseInt(infosClientJSON.get(1).toString()));
                         j.setNomPlateau(infosClientJSON.get(2).toString());
-                        aff.setCouleur(couleurClient);
-                        aff.setPrefix("JOUEUR " + j.getNum() + "->");
-                        aff.afficher("Couleur attribuee : " + couleurClient);
+                        //aff.setCouleur(couleurClient);
+                        //aff.setPrefix("JOUEUR " + j.getNum() + "->");
+                        //aff.afficher("Couleur attribuee : " + couleurClient);
                         // Faut deja choisir un plateau ...
                         //aff.afficher("Plateau attribue : " + j.getNomPlateau());
                     }
                     catch (Exception e){ System.out.println(e.toString()); }
                 }
             });
-
 
             connexion.on("connect", new Emitter.Listener() {
                 @Override
@@ -90,7 +91,6 @@ public class Client {
                     aff.afficher("Deconnexion");
                     connexion.disconnect();
                     connexion.close();
-                    synchronized (attenteDéconnexion) { attenteDéconnexion.notify(); }
                 }
             });
 

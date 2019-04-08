@@ -79,18 +79,21 @@ public class Serveur {
             @Override
             public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p = retrouverParticipant(socketIOClient);
+                Affichage aff = new Affichage(p.getCouleur(),"Joueur num "+ p.getNb() +" -> ");
                 aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
+                //aff.afficher("Le joeur a la couleur suivante : " + p.getCouleur());
                 p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
-                aff.afficher("Le joueur num" + p.getNb() + " a " + p.getNbPts() + " points");
+                aff.afficher("Le joueur num" + p.getNb() + " a maintenant " + p.getNbPts() + " points");
                 nbJoues++;
 
                 p.cartes.remove(carte);
 
+                aff = new Affichage("GREY", "");
                 if(nbJoues < nbJoueurs) {
-                    aff.afficher("tout le monde n'a pas joue on attend");
+                    aff.afficher("C'est au tour du joueur num"+p.getNb()+" !");
                 }
                 else if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
-                    aff.afficher("-------------------- ! Changement de tour ! --------------------");
+                    aff.afficher("\n\n-------------------- ! Changement de tour ! --------------------\n");
                     nbTours++;
                     jouerTour();
                    
@@ -106,7 +109,17 @@ public class Serveur {
     }
 
     public void finDeLAge() {
-        aff.afficher("-------------------- ! L'age est terminé ! --------------------");
+        aff.afficher("-------------------- ! L'age est termine ! --------------------");
+        Participant pMax = null;
+        int max = 0;
+        for(Participant p : listeClients) {
+            aff.afficher("Le joueur num"+p.getNb() + " a " + p.getNbPts());
+            if(p.getNbPts() > 0) {
+                Affichage aff = new Affichage("YELLOW"," -> ");
+                //aff.afficher("Le premier joueur est le joueur numéro" + pMax.getNbPts() + " avec " + pMax.getNbPts() + "points");
+            }
+        }
+
     }
 
 
@@ -233,7 +246,7 @@ public class Serveur {
             for(Participant client: listeClients){
                 //client.client.sendEvent("jouerTour");
                 client.client.sendEvent("envoyerCarte", client.cartes);
-                aff.afficher("nbJoues=" + nbJoues);
+                //aff.afficher("nbJoues=" + nbJoues);
                 // nbJoues++;            
         }
     }
