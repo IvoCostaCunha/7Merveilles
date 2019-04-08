@@ -82,16 +82,24 @@ public class Serveur {
                 aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
                 p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
                 aff.afficher("Le joueur num" + p.getNb() + " a " + p.getNbPts() + " points");
+                nbJoues++;
 
-                if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
+                p.cartes.remove(carte);
+
+                if(nbJoues < nbJoueurs) {
+                    aff.afficher("tout le monde n'a pas joue on attend");
+                }
+                else if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
                     aff.afficher("-------------------- ! Changement de tour ! --------------------");
-                    nbJoues = 0;
+                    nbTours++;
                     jouerTour();
-                }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
+                   
+                }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){        
+                    nbTours++;
+
                     finDeLAge();
                 }
 
-                p.cartes.remove(carte);
             }
             
          });
@@ -157,7 +165,7 @@ public class Serveur {
 
         socketIOClient.sendEvent("infosJoueur", infosJoueur);
 
-        donnerNbJoueurs(socketIOClient, nbJoueurs);
+        donnerNbJoueurs(socketIOClient, p.getNb());
 
         p.client = socketIOClient;
 
@@ -205,6 +213,7 @@ public class Serveur {
 
     private  void jouerTour() {
         aff.afficher("- Tour numero " + nbTours + " -");
+        nbJoues = 0;
         positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
         // faire tourner les mains / decks
@@ -225,10 +234,8 @@ public class Serveur {
                 //client.client.sendEvent("jouerTour");
                 client.client.sendEvent("envoyerCarte", client.cartes);
                 aff.afficher("nbJoues=" + nbJoues);
-                nbJoues++;            
+                // nbJoues++;            
         }
-        //nbJoues = 0;
-        nbTours++;
     }
 
 
