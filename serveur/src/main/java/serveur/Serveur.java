@@ -109,14 +109,19 @@ public class Serveur {
     }
 
     public void finDeLAge() {
-        aff.afficher("-------------------- ! L'age est termine ! --------------------");
-        Participant pMax = null;
+        aff.afficher("-------------------- ! L'age est termine ! --------------------\n");
+        Participant pMax;
         int max = 0;
+        int joueursScore = 0;
         for(Participant p : listeClients) {
-            aff.afficher("Le joueur num"+p.getNb() + " a " + p.getNbPts());
-            if(p.getNbPts() > 0) {
+            joueursScore++;
+            aff.afficher("Le joueur num"+p.getNb() + " a " + p.getNbPts() + " points");
+            if(p.getNbPts() > max) {
+                pMax = p;
                 Affichage aff = new Affichage("YELLOW"," -> ");
-                //aff.afficher("Le premier joueur est le joueur numéro" + pMax.getNbPts() + " avec " + pMax.getNbPts() + "points");
+                if(nbJoueurs == joueursScore) {
+                    aff.afficher("Le premier joueur est le joueur numero" + pMax.getNb() + " avec " + pMax.getNbPts() + "points");
+                }
             }
         }
 
