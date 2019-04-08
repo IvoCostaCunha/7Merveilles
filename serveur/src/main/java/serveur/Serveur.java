@@ -80,10 +80,10 @@ public class Serveur {
             public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p = retrouverParticipant(socketIOClient);
                 Affichage aff = new Affichage(p.getCouleur(),"Joueur num "+ p.getNb() +" -> ");
-                aff.afficher("Le joueur num" + p.getNb() + " a joue " + carte.getNomCarte().toString());
+                aff.afficher("Le joueur a joue " + carte.getNomCarte().toString());
                 //aff.afficher("Le joeur a la couleur suivante : " + p.getCouleur());
                 p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
-                aff.afficher("Le joueur num" + p.getNb() + " a maintenant " + p.getNbPts() + " points");
+                aff.afficher("Le joueur a maintenant " + p.getNbPts() + " points");
                 nbJoues++;
 
                 p.cartes.remove(carte);
@@ -109,7 +109,8 @@ public class Serveur {
     }
 
     public void finDeLAge() {
-        aff.afficher("-------------------- ! L'age est termine ! --------------------\n");
+        aff = new Affichage("GREY", "");
+        aff.afficher("\n-------------------- ! L'age est termine ! --------------------\n");
         Participant pMax;
         int max = 0;
         int joueursScore = 0;
@@ -120,7 +121,7 @@ public class Serveur {
                 pMax = p;
                 Affichage aff = new Affichage("YELLOW"," -> ");
                 if(nbJoueurs == joueursScore) {
-                    aff.afficher("Le premier joueur est le joueur numero" + pMax.getNb() + " avec " + pMax.getNbPts() + "points");
+                    aff.afficher("Le premier joueur est le joueur numero" + pMax.getNb() + " avec " + pMax.getNbPts() + " points");
                 }
             }
         }
@@ -230,7 +231,7 @@ public class Serveur {
 
 
     private  void jouerTour() {
-        aff.afficher("- Tour numero " + nbTours + " -");
+        aff.afficher("\t- Tour numero " + nbTours + " -");
         nbJoues = 0;
         positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
