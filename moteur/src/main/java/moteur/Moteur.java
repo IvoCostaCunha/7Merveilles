@@ -38,7 +38,7 @@ public class Moteur {
     /**
      * Méthode qui instancie les cecks circulants
      */
-    private void initialisationMains(){
+    public void initialisationMains(){
         for(int i=0;i<7;i++){
             mains.add(new ArrayList<Carte>(7));
         }
@@ -76,5 +76,7 @@ public class Moteur {
 
     /*-------------------- Geteurs --------------------*/
     public ArrayList<Plateau> getPlateaux() { return plateaux; }
-    public ArrayList<ArrayList<Carte>> getMains() { return mains; }
+    public ArrayList<ArrayList<Carte>> getMains() { //initialisationMains();
+ 		return mains; }
+    public void newMain() { initialisationMains();}
 }

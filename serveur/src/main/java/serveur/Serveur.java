@@ -39,6 +39,8 @@ public class Serveur {
     /*---------- Infos sur les cartes ----------*/
     private int positionCirculation = 0;
 
+    private int nbAge = 1;
+
     // Le serveur est en bleu
     private Affichage aff = new Affichage("BLUE","SERVEUR -> ");
 
@@ -65,7 +67,8 @@ public class Serveur {
                 connexionClient(socketIOClient);
 
                 if(nbJoueurs == 2) { // == nb de joueurs qu'on veut
-                    lancerPartie();
+                    aff.afficher("Le jeu commence, les cartes sont distribuees : ");
+                    lancerTour();
                 }
             }
         });
@@ -79,6 +82,11 @@ public class Serveur {
             @Override
             public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p = retrouverParticipant(socketIOClient);
+                if(nbJoues == 0 && nbTours == 0) {
+                    aff.afficher("\n\t--- Debut de l'age " + nbAge  + " ---");
+                }
+                aff = new Affichage("GREY", "");
+                aff.afficher("C'est au tour du joueur num" + p.getNb() + " !");
                 Affichage aff = new Affichage(p.getCouleur(),"Joueur num "+ p.getNb() +" -> ");
                 aff.afficher("Le joueur a joue " + carte.getNomCarte().toString());
                 //aff.afficher("Le joeur a la couleur suivante : " + p.getCouleur());
@@ -90,7 +98,7 @@ public class Serveur {
 
                 aff = new Affichage("GREY", "");
                 if(nbJoues < nbJoueurs) {
-                    aff.afficher("C'est au tour du joueur num"+p.getNb()+" !");
+                    //aff.afficher("C'est au tour du joueur num"+p.getNb()+" !");
                 }
                 else if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
                     aff.afficher("\n\n-------------------- ! Changement de tour ! --------------------\n");
@@ -101,6 +109,13 @@ public class Serveur {
                     nbTours++;
 
                     finDeLAge();
+                    if(nbAge != 3) {
+                        nbAge++;
+                        aff.afficher("On change d'age"); //Pourquoi on a qu'une carte de tirée ?
+                        nbTours = 0;
+                        nbJoues = 0;
+                        lancerTour();
+                    }
                 }
 
             }
@@ -208,12 +223,12 @@ public class Serveur {
     /**
      * Méthode qui lance la partie
     */
-    private void lancerPartie() {
-        aff.afficher("Le jeu commence, les cartes sont distribuees : ");
+    private void lancerTour() {
         setNbCoupsJoues(0);
 
         for(int i = 0; i < listeClients.size(); i++ ){
             Participant p = listeClients.get(i);
+            //moteur.newMain();
             p.cartes = moteur.getMains().get(i);
             aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
