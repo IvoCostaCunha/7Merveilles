@@ -13,7 +13,9 @@ import java.util.ArrayList;
 public class Carte {
     private String nomCarte;
     private int pointsCarte;
+    private int pointsMilitaireCarte;
     private int prixCartePieces;
+
     private ArrayList<Ressource> prixCarteRessources;
 
     /**
@@ -73,10 +75,19 @@ public class Carte {
         else if(this.prixCartePieces == 0 & this.prixCarteRessources != null){ return 3;}
         else { return 0; }
     }
+    public Carte(String nomCarte, int points, int prixCartePieces,int pointsMilitaires ,ArrayList<Ressource> prixCarteRessources){
+        this.nomCarte = nomCarte;
+        if (points == 0){ this.pointsCarte = 1; }
+        else{ this.pointsCarte = points; }
+        this.prixCartePieces = prixCartePieces;
+        this.pointsMilitaireCarte  = pointsMilitaires;
+        this.prixCarteRessources = prixCarteRessources;
+    }
 
     /*---------- Geteurs ----------*/
     public String getNomCarte() { return nomCarte; }
     public int getPointsCarte() { return pointsCarte; }
+    public int getPointsMiliaraireCarte() { return pointsMilitaireCarte;}
     public int getPrixCartePieces() { return prixCartePieces; }
     public ArrayList<Ressource> getPrixCarteRessources(){ return prixCarteRessources; }
 
