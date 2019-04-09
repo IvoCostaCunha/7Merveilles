@@ -229,6 +229,7 @@ public class Serveur {
         for(int i = 0; i < listeClients.size(); i++ ){
             Participant p = listeClients.get(i);
             //moteur.newMain();
+            Moteur moteur = new Moteur();
             p.cartes = moteur.getMains().get(i);
             aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
