@@ -39,6 +39,11 @@ public class Moteur {
      * Méthode qui instancie les cecks circulants
      */
     public void initialisationMains(){
+        ArrayList<String> typesCartes = new ArrayList<String>();
+        typesCartes.add("pointsCarteCivil");
+        typesCartes.add("pointsCarteMilitaire");
+        typesCartes.add("pointsCarteCommercial");
+        typesCartes.add("pointsCarteScientifique");
         for(int i=0;i<7;i++){
             mains.add(new ArrayList<Carte>(7));
         }
@@ -47,7 +52,9 @@ public class Moteur {
                 ArrayList<Ressource> ressources = new ArrayList<Ressource>();
                 ressources.add(new Ressource("Bois",5));
                 ressources.add(new Ressource("Pierre",3));
-                main.add(new Carte("Carte - "+ (i+1),(int)(Math.random()*20),3,ressources));
+                int choixTypeCarteAlea = (int)(Math.random() * 4);
+                //main.add(new Carte("Carte - "+ (i+1),(int)(Math.random()*20),3,ressources));
+                main.add(new Carte("Carte - "+ (i+1), typesCartes.get(choixTypeCarteAlea), (int)(Math.random()*20)));
             }
         }
     }

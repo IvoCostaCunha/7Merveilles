@@ -23,7 +23,7 @@ public class PlateauTest {
         assertEquals(m,mBis);
     }
 
-    @Test
+    /*@Test
     public void testConstruireMerveille(){
         Ressource r1 = new Ressource("Bois",1);
         Plateau p = new Plateau("p1",r1,3);
@@ -41,5 +41,5 @@ public class PlateauTest {
         }
 
         assertEquals(3,p.getNiveauDeMerveilleActuel());
-    }
+    }*/
 }

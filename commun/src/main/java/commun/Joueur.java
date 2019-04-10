@@ -90,12 +90,17 @@ public class Joueur {
         return verif;
     }
 
+
+    private int getPointsCarte(Carte c) {
+        return c.getTypePointsCarte(c);
+   }
+
     /**
      * Méthode qui rajoute une carte utilisé a la liste des cartes utilisées et rajoute les points de la carte au joueur
      * @param uneCarte la carte utilisée
      */
     public void ajouterCarteJoue(Carte uneCarte){
-        ajouterPoints(uneCarte.getPointsCarte());
+        ajouterPoints(getPointsCarte(uneCarte));
         cartesJouees.add(uneCarte);
     }
 
@@ -118,12 +123,12 @@ public class Joueur {
         int rand = (int)(Math.random()*10);
         Carte carte = choisirCarte();
         if(rand > 5){
-            ajouterPoints(carte.getPointsCarte());
+            ajouterPoints(getPointsCarte(carte));
             ajouterCarteJoue(carte);
         }
         else{
             if(!construireMerveille(carte)){
-                ajouterPoints(carte.getPointsCarte());
+                ajouterPoints(getPointsCarte(carte));
                 ajouterCarteJoue(carte);
             }
             else{
@@ -155,7 +160,7 @@ public class Joueur {
     /*-------------------- Seteurs --------------------*/
     public void setMain(ArrayList<Carte> uneMain) { main = uneMain; }
     public void setNum(int unNum) { num = unNum; }
-    public void setNomPlateau(String nomPlateau) { nomPlateau = nomPlateau; }
+    public void setNomPlateau(String nomPlateau) { nomPlateau = this.nomPlateau; }
 
 
     /*-------------------- Geteurs --------------------*/

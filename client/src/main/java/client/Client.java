@@ -107,13 +107,21 @@ public class Client {
                     //System.out.println("carte : " + objects[0]);
                     //String strCarteTest = (String) objects[0];
                     //String strDeckCourant = (String) objects[0];
+                    ArrayList<String> typesCartes = new ArrayList<String>();
+                    typesCartes.add("pointsCarteCivil");
+                    typesCartes.add("pointsCarteMilitaire");
+                    typesCartes.add("pointsCarteCommercial");
+                    typesCartes.add("pointsCarteScientifique");
+                    int choixTypeCarteAlea = (int)(Math.random() * 4);
+
+
                     try{
                         JSONArray deckCourantJSONArray = (JSONArray)objects[0];
                         ArrayList<Carte> deckCourantClient = new ArrayList<Carte>();
 
                         for(int i=0;i<deckCourantJSONArray.length();i++){
                             JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
-                            Carte objCarte = new Carte(carteJSON.getString("nomCarte"),carteJSON.getInt("pointsCarte"));
+                            Carte objCarte = new Carte(carteJSON.getString("nomCarte"), typesCartes.get(choixTypeCarteAlea), carteJSON.getInt("pointsCarte"));
                             deckCourantClient.add(objCarte);
                         }
 
