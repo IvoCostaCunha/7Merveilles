@@ -38,4 +38,22 @@ public class ServeurTest {
         String couleur = unserveur.choisirCouleur();
         assertNotEquals(unecouleur,couleur);
     }
+
+    @Test
+    public void testAjoutMain() {
+    	Participant p;
+    	Serveur.lancerTour();
+    }
+
+    @Test
+    public Participant retrouverParticipant(SocketIOClient s) {
+        Participant j = null;
+
+    /*    for(Participant p : listeClients) {
+            if (p.client.getRemoteAddress().toString().equals(s.getRemoteAddress().toString())) {
+                j = p;
+                break;
+            }
+        }*/
+
 }

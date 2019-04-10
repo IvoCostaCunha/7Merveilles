@@ -31,13 +31,13 @@ public class Serveur {
 
     /* ---------- Infos clients connectés ---------- */
     private int nbJoueurs = 0;
-    private int nbJoueursDistrib = 0; //Nombre de decks distribues
+    //private int nbJoueursDistrib = 0; //Nombre de decks distribues
     private ArrayList<Participant> listeClients = new ArrayList<>();
 
     private int plateauxDistrib = 0;
 
     /*---------- Infos sur les cartes ----------*/
-    private int positionCirculation = 0;
+    //private int positionCirculation = 0;
 
     private int nbAge = 1;
 
@@ -46,7 +46,7 @@ public class Serveur {
 
     private ArrayList<String> couleursDispo;
 
-    private int nbTours = 0;
+    private int nbTours = 1;
 
     /**
      * Constructeur de la classe serveur
@@ -82,7 +82,7 @@ public class Serveur {
             @Override
             public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p = retrouverParticipant(socketIOClient);
-                if(nbJoues == 0 && nbTours == 0) {
+                if(nbJoues == 0 && nbTours == 1) {
                     aff.afficher("\n\t--- Debut de l'age " + nbAge  + " ---");
                 }
                 aff = new Affichage("GREY", "");
@@ -112,7 +112,7 @@ public class Serveur {
                     if(nbAge != 3) {
                         nbAge++;
                         aff.afficher("On change d'age"); //Pourquoi on a qu'une carte de tirée ?
-                        nbTours = 0;
+                        nbTours = 1;
                         nbJoues = 0;
                         lancerTour();
                     }
@@ -249,7 +249,7 @@ public class Serveur {
     private  void jouerTour() {
         aff.afficher("\t- Tour numero " + nbTours + " -");
         nbJoues = 0;
-        positionCirculation = 0;
+        //positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
         // faire tourner les mains / decks
         
