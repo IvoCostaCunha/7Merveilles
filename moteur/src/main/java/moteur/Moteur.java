@@ -53,8 +53,10 @@ public class Moteur {
                 ressources.add(new Ressource("Bois",5));
                 ressources.add(new Ressource("Pierre",3));
                 int choixTypeCarteAlea = (int)(Math.random() * 4);
+                int valeurCarte = (int)(Math.random()*20);
                 //main.add(new Carte("Carte - "+ (i+1),(int)(Math.random()*20),3,ressources));
-                main.add(new Carte("Carte - "+ (i+1), typesCartes.get(choixTypeCarteAlea), (int)(Math.random()*20)));
+                String typeCarte = typesCartes.get(choixTypeCarteAlea);
+                main.add(new Carte("Carte - "+ (i+1), typeCarte, valeurCarte));
             }
         }
     }

@@ -32,7 +32,7 @@ public class Carte {
      * @param points nombre de points que la carte rapporte, si définit à 0, est set à 1
      */
     public Carte(String nomCarte, String typeCarte, int points) {
-        this.nomCarte = nomCarte + "-" + typeCarte;
+        this.nomCarte = nomCarte;
         if (points == 0) { 
             if(typeCarte == "pointsCarteCivil") {
                 this.pointsCarteCivil = 1; 
@@ -66,15 +66,18 @@ public class Carte {
     }
 
     public int getTypePointsCarte(Carte c) {
+        //System.out.println("-- "+c.typeCarte());
         if(c.getTypeCarte() == "pointsCarteCivil") {
             return c.pointsCarteCivil;
         }else if(c.getTypeCarte() == "pointsCarteScientifique") {
             return c.pointsCarteScientifique;
         }else if(c.getTypeCarte() == "pointsCarteMilitaire") {
             return c.pointsCarteMilitaire;
-        }else{
+        }else if(c.getTypeCarte() == "pointsCarteCommerciale"){
             return c.pointsCarteCommerciale;
-        } 
+        }else{
+            return 6;
+        }
     }
 
     /**
@@ -128,7 +131,7 @@ public class Carte {
     /*---------- Geteurs ----------*/
     public String getNomCarte() { return nomCarte; }
     public int getPointsCarteMilitaire() { return pointsCarteMilitaire; }
-    public int getPointsCommercialCarte() { return pointsCarteCommerciale;}
+    public int getPointsCommercialeCarte() { return pointsCarteCommerciale;}
     public int getPointsScientifiqueCarte() { return pointsCarteScientifique;}
     public int getPointsCivilCarte() { return pointsCarteCivil;}
     public String getTypeCarte() { return typeCarte; }

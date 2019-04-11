@@ -90,7 +90,8 @@ public class Serveur {
                 Affichage aff = new Affichage(p.getCouleur(),"Joueur num "+ p.getNb() +" -> ");
                 aff.afficher("Le joueur a joue " + carte.getNomCarte().toString());
                 //aff.afficher("Le joeur a la couleur suivante : " + p.getCouleur());
-                p.setNbPts(p.getNbPts()+ getPointsCarte(carte));
+
+                p.setNbPts(p.getNbPts()+ carte.getTypePointsCarte(carte)); // A modif
                 aff.afficher("Le joueur a maintenant " + p.getNbPts() + " points");
                 nbJoues++;
 
@@ -234,8 +235,8 @@ public class Serveur {
             p.cartes = moteur.getMains().get(i);
             aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
-                aff.afficher(c.getNomCarte() + " est une carte de type " + c.getTypeCarte() + " qui vaut " +
-                getPointsCarte(c) + " points");
+                aff.afficher("Nom de la carte : " + c.getNomCarte() + " est une carte de type " + c.getTypeCarte() + " qui vaut " +
+                getPointsCarte(c) + " points"); 
             }
             System.out.println("\n\n");
         }

@@ -121,7 +121,7 @@ public class Client {
 
                         for(int i=0;i<deckCourantJSONArray.length();i++){
                             JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
-                            Carte objCarte = new Carte(carteJSON.getString("nomCarte"), typesCartes.get(choixTypeCarteAlea), carteJSON.getInt("pointsCarte"));
+                            Carte objCarte = new Carte(carteJSON.getString("nomCarte"), typesCartes.get(choixTypeCarteAlea), 0); //A modif ou enlever
                             deckCourantClient.add(objCarte);
                         }
 
