@@ -51,7 +51,7 @@
 
 #### Ajouté dans cette itération 
 
--Correction de quelques problèmes de mises en place
+- Correction de quelques problèmes de mises en place
 
 #### Non fait
 
@@ -89,3 +89,8 @@
 - Le reste des fonctionnalités des itérations précédantes
 - Gildes
 - Bots "intelligents"
+
+#### Maj 11/04/2019
+
+ - Rattraper tout le retard ... (Certaines fonctionnalités ne seront peut être pas intégrées)
+
