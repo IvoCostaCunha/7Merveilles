@@ -10,8 +10,9 @@ public class Participant {
 
     private String couleur;
     private String plateau;
-    private int nb;
-    private int nbPts;
+    private int numeroParticipants;
+    private int nbPtsCartes;
+    private int nbPlateaux;
 
     public String getCouleur()
     {
@@ -31,22 +32,24 @@ public class Participant {
     }
     public int getNb()
     {
-        return this.nb;
+        return this.numeroParticipants;
     }
     public void setNb(int nb)
     {
-        this.nb = nb;
+        this.numeroParticipants = nb;
     }
     public  int getNbPts()
     {
-        return this.nbPts;
+        return this.nbPtsCartes;
     }
     public void setNbPts(int nbPts)
     {
-        this.nbPts = nbPts;
+        this.nbPtsCartes = nbPts;
     }
+    public int getNbPlateaux(){ return this.nbPlateaux;};
 
     public SocketIOClient client;
 
     public ArrayList<Carte> cartes;
+    public ArrayList<Plateau> plateaux;
 }

@@ -14,7 +14,7 @@ public class PlateauTest {
     @Test
     public void testAjoutMerveille(){
         Ressource r1 = new Ressource("Bois",1);
-        Merveille m = new Merveille(1);
+        Merveille m = new Merveille(1,10,10,"");
 
         Plateau p = new Plateau("p1",r1,3);
         p.ajouterMerveille(m);
@@ -28,9 +28,9 @@ public class PlateauTest {
         Ressource r1 = new Ressource("Bois",1);
         Plateau p = new Plateau("p1",r1,3);
 
-        Merveille m = new Merveille(1);
-        Merveille m2 = new Merveille(1);
-        Merveille m3 = new Merveille(1);
+        Merveille m = new Merveille(1,10,10,"");
+        Merveille m2 = new Merveille(1,10,10,"");
+        Merveille m3 = new Merveille(1,10,10,"");
 
         p.ajouterMerveille(m,m2,m3);
 

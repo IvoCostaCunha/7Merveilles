@@ -10,7 +10,7 @@ class MerveilleTest {
 	public void MerveilleValabletest() throws Exception {
 		//fail("Not yet implemented");
 		boolean res = true;
-		Merveille merv = new Merveille(15);
+		Merveille merv = new Merveille(1,0,10,"");
 		merv.setMerveilleValable();
 		assertEquals(res,merv.getStatutMerveille());
 		
@@ -19,7 +19,7 @@ class MerveilleTest {
 	@Test
 	public void  ValeurMerveilletest() throws Exception 
 	{
-		Merveille merv = new Merveille(1);
+		Merveille merv = new Merveille(1,0,10,"");
 		int res = 20;
 		merv.setPointsMerveille(res);
 		assertEquals(res,merv.getPointsMerveille());

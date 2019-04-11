@@ -17,19 +17,20 @@ public class Plateau {
     private Ressource ressourcePlateau;
     private int niveauMerveilleActuel;
     private int niveauMerveilleMax;
+    private String facePlateau;
 
 
     /**
      * Constructeur de la classe Plateau avec ajoute à la création des Merveilles
      * @param nomPlateau nom du plateau
      * @param ressourcePlateau ressource contenue dans le plateau
-     * @param niveauMerveillesMax niveau max de merveilles ex:  3 pour un plateau a 3 merveilles
      * @param listeMerveilles ArrayList des Merveilles du Plateau
      */
-    public Plateau(ArrayList<Merveille> listeMerveilles,String nomPlateau, Ressource ressourcePlateau){
+    public Plateau(ArrayList<Merveille> listeMerveilles,String nomPlateau, Ressource ressourcePlateau,String facePlateau){
         this.nomPlateau = nomPlateau;
         this.ressourcePlateau = ressourcePlateau;
         this.listeMerveilles = listeMerveilles;
+        this.facePlateau = facePlateau;
         this.niveauMerveilleMax = listeMerveilles.size();
         this.niveauMerveilleActuel = 0;
     }
@@ -63,7 +64,7 @@ public class Plateau {
         Boolean verif = false;
         if(niveauMerveilleActuel <= niveauMerveilleMax){
             for(Merveille uneMerveille : listeMerveilles){
-                if(uneMerveille.getNiveauMerveille() == niveauMerveilleActuel+1){
+                if(uneMerveille.getNumMerveille() == niveauMerveilleActuel+1){
                     uneMerveille.setMerveilleValable();
                     niveauMerveilleActuel++;
                     verif = true;
@@ -79,7 +80,7 @@ public class Plateau {
      */
     public void ajouterMerveille(Merveille... merveilles){
         for(Merveille uneMerveille : merveilles){
-            uneMerveille.setNiveau(listeMerveilles.size()+1);
+            uneMerveille.setNumMerveille(listeMerveilles.size()+1);
             this.listeMerveilles.add(uneMerveille);
             niveauMerveilleMax++;
         }

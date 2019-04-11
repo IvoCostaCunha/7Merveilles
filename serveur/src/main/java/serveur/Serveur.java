@@ -28,6 +28,7 @@ public class Serveur {
     private final Object attenteConnexion = new Object();
 
     private int nbJoues = 0;
+    private boolean distributionsDesPlateaux = false;
 
     /* ---------- Infos clients connectés ---------- */
     private int nbJoueurs = 0;
@@ -68,6 +69,7 @@ public class Serveur {
 
                 if(nbJoueurs == 2) { // == nb de joueurs qu'on veut
                     aff.afficher("Le jeu commence, les cartes sont distribuees : ");
+                    aff.afficher ("Les plateaux le sont aussi");
                     lancerTour();
                 }
             }
@@ -83,6 +85,7 @@ public class Serveur {
             public synchronized void onData(SocketIOClient socketIOClient, Carte carte, AckRequest ackRequest) throws Exception {
                 Participant p = retrouverParticipant(socketIOClient);
                 if(nbJoues == 0 && nbTours == 1) {
+                    //aff.afficher("Le joueur num" + p.getNb() + "choisir le plateau");
                     aff.afficher("\n\t--- Debut de l'age " + nbAge  + " ---");
                 }
                 aff = new Affichage("GREY", "");
@@ -97,10 +100,10 @@ public class Serveur {
                 p.cartes.remove(carte);
 
                 aff = new Affichage("GREY", "");
-                if(nbJoues < nbJoueurs) {
+                /*if(nbJoues < nbJoueurs) {
                     //aff.afficher("C'est au tour du joueur num"+p.getNb()+" !");
-                }
-                else if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
+                }*/
+                 if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
                     aff.afficher("\n\n-------------------- ! Changement de tour ! --------------------\n");
                     nbTours++;
                     jouerTour();
@@ -117,10 +120,28 @@ public class Serveur {
                         lancerTour();
                     }
                 }
+            }
+         });
+        serveur.addEventListener("renvoiePlateau", Plateau.class, new DataListener<Plateau>() {
+            @Override
+            public synchronized void onData(SocketIOClient socketIOClient, Plateau plateau, AckRequest ackRequest) throws Exception {
+                Participant p = retrouverParticipant(socketIOClient);
+                if (nbTours == 0 && nbJoues == 0)
+                {
+                    aff.afficher("Le plateau du joueur num" + p.getNb() +" est"+ plateau.getNomPlateau());
+                    p.plateaux.remove(plateau);
+                    if (nbJoues == 1)
+                    {
+                        nbJoues = 0;
+                    }
+                    else
+                    {
+                        nbJoues++;
+                    }
+                }
 
             }
-            
-         });
+        });
     }
 
     public void finDeLAge() {
@@ -231,9 +252,22 @@ public class Serveur {
             //moteur.newMain();
             Moteur moteur = new Moteur();
             p.cartes = moteur.getMains().get(i);
+            p.plateaux = moteur.getPlateaux();
             aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
                 aff.afficher(c.getNomCarte() + " qui vaut " + c.getPointsCarte());
+            }
+            if (distributionsDesPlateaux == (false))
+            {
+                System.out.println("\n");
+                aff.afficher("Liste des plateaux distribuees pour le joueur num" + p.getNb() );
+                for (Plateau unPlateau : p.plateaux) {
+                    aff.afficher("Le plateau " + unPlateau.getNomPlateau());
+                }
+                if (i==listeClients.size()-1)
+                {
+                    distributionsDesPlateaux = true;
+                }
             }
             System.out.println("\n\n");
         }
@@ -267,9 +301,13 @@ public class Serveur {
 
             for(Participant client: listeClients){
                 //client.client.sendEvent("jouerTour");
+                client.client.sendEvent("envoyerPlateau",client.plateaux);
                 client.client.sendEvent("envoyerCarte", client.cartes);
+
                 //aff.afficher("nbJoues=" + nbJoues);
-                // nbJoues++;            
+                // nbJoues++;
+
+
         }
     }
 

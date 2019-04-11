@@ -18,6 +18,9 @@ public class Moteur {
     private final ArrayList<ArrayList<Carte>> mains = new ArrayList<ArrayList<Carte>>();
     // TODO: A changer par une sous liste de plateaux si les face A/B sont gérés
     private ArrayList<Plateau> plateaux = new ArrayList<Plateau>();
+    Merveille MerveilleUn;
+    Merveille MerveilleDeux;
+    Merveille MerveilleTrois;
 
     /**
      * Constructeur par default de la classe Moteur
@@ -56,19 +59,156 @@ public class Moteur {
      * Méthode qui initialise les plateaux
      */
     private void initialiserPlateaux(){
-        for(int i=0;i<7;i++){
-            int nbMerveilles = 1 + (int)(Math.random() * 5); //Combien de merveille pour le plateau ?
-            ArrayList<Merveille> listeMerveilles = new ArrayList<>();
-            for(int j = nbMerveilles; j<nbMerveilles; j++) {
-                Merveille nouvMerveille = new Merveille(j);
-                listeMerveilles.add(nouvMerveille);
-            }
-            String nomPlateau = "plateau" + i; //Nom du plateau
+        ArrayList<String> NomsPlateaux = new ArrayList<String>();
+        NomsPlateaux.add("LeColosseDeRhodes");
+        NomsPlateaux.add("TempleEphesos");
+        NomsPlateaux.add("PyramideDeGizeh");
+        NomsPlateaux.add("JardinsSuspendusDeBabylone");
+        NomsPlateaux.add("StatueDeZeusAOlympie");
+        NomsPlateaux.add("PhareDAlexandrie");
+        NomsPlateaux.add("MausoléDHalicarnasse");
 
-            Plateau plt = new Plateau(listeMerveilles, nomPlateau, new Ressource("Pierre",5));
+        for(String unNomPlateau : NomsPlateaux)
+        {
+            // TODO: Il faut gérer les cartes scientifiques dans l'avenir ainsi que les effes de certaines merveilles
+            int nbMerveilles = 3;
+            ArrayList<Merveille> listeMerveilles = new ArrayList<>();
+
+            switch(unNomPlateau)
+            {
+                case "LeColosseDeRhodes":
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(2,0,2,"");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltColosseDeRhodes = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Minerai",1),"A");
+                plateaux.add(pltColosseDeRhodes);
+                listeMerveilles.clear();
+                break;
+
+                case "TempleEphesos":
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(2,0,2,"");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltTempleEphesos = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Papier",1),"A");
+                plateaux.add(pltTempleEphesos);
+                listeMerveilles.clear();
+                break;
+
+                case "PyramideDeGizeh":
+
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(2,5,0,"");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltPyramideDeGizeh = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Pierre",1),"A");
+                plateaux.add(pltPyramideDeGizeh);
+                listeMerveilles.clear();
+                break;
+
+                case "JardinsSuspendusDeBabylone" :
+
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(2,0,2,"Récupérer un instrument de science");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltJardinsDeBabylone = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Brique",1),"A");
+                plateaux.add(pltJardinsDeBabylone);
+                listeMerveilles.clear();
+                break;
+
+                case "StatueDeZeusAOlympie" :
+
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(2,0,2,"");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltStatueDeZeusAOlympie = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Bois",1),"A");
+                plateaux.add(pltStatueDeZeusAOlympie);
+                listeMerveilles.clear();
+                break;
+
+                case "PhareDAlexandrie" :
+
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(0,0,0,"On peut construire une merveille gratuitement à chaque age");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltPhareDAlexandrie = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Fiole",1),"A");
+                plateaux.add(pltPhareDAlexandrie);
+                listeMerveilles.clear();
+                break;
+
+                case "MausoléDHalicarnasse" :
+
+                MerveilleUn = new Merveille(1,3,0,"");
+                MerveilleDeux = new Merveille(2,0,0,"Choisissez une carte dans la défausse, utilisé la sans prendre en compte la ressource");
+                MerveilleTrois = new Merveille(3,7,0,"");
+
+                listeMerveilles.add(MerveilleUn);
+                listeMerveilles.add(MerveilleDeux);
+                listeMerveilles.add(MerveilleTrois);
+
+                Plateau pltMausoléDHalicarnasse = new Plateau(listeMerveilles, unNomPlateau, new Ressource("Tissu",1),"A");
+                plateaux.add(pltMausoléDHalicarnasse);
+                listeMerveilles.clear();
+                break;
+
+            }
+
+            /*
+            int nbMerveillesColosseDeRhodes = 3;  //Combien de merveille pour le plateau ?
+            int nbMerveillesTempleEphesos = 3;
+            int nbMerveillesPyramideDeGizeh = 3;
+            int nbMerveillesJardinsDeBabylone = 3;
+            int nbMerveillesStatueDeZeusAOlympie = 3;
+            int nbMerveillesPhareDAlexandrie = 3;
+            int nbMerveillesMausoléDHalicarnasse = 3; */
+
+
+            //String nomPlateau = "plateau" + i; //Nom du plateau
+            /*
+            Plateau pltColosseDeRhodes = new Plateau(listeMerveilles, "LeColosseDeRhodes", new Ressource("Minerai",1),"A");
+            Plateau pltTempleEphesos = new Plateau(listeMerveilles, "TempleEphesos", new Ressource("Papier",1),"A");
+            Plateau pltPyramideDeGizeh = new Plateau(listeMerveilles, "PyramideDeGizeh", new Ressource("Pierre",1),"A");
+            Plateau pltJardinsDeBabylone = new Plateau(listeMerveilles, "JardinSuspenduesDeBabylone", new Ressource("Brique",1),"A");
+            Plateau pltStatueDeZeusAOlympie = new Plateau(listeMerveilles, "StatueDeZeusAOlympie", new Ressource("Bois",1),"A");
+            Plateau pltPhareDAlexandrie = new Plateau(listeMerveilles,"PhareDAlexandrie",new Ressource("Fiole",1),"A");
+            Plateau pltMausoléDHalicarnasse = new Plateau(listeMerveilles,"MausoléDHalicarnasse",new Ressource("Tissu",1),"A");
 
             // A changer par une sous liste de plateaux si les face A/B sont gérés
-            plateaux.add(plt);
+            plateaux.add(pltColosseDeRhodes);
+            plateaux.add(pltTempleEphesos);
+            plateaux.add(pltPyramideDeGizeh);
+            plateaux.add(pltJardinsDeBabylone);
+            plateaux.add(pltStatueDeZeusAOlympie);
+            plateaux.add(pltPhareDAlexandrie);
+            plateaux.add(pltMausoléDHalicarnasse);*/
         }
     }
 
