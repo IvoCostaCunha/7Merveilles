@@ -76,7 +76,7 @@ public class Carte {
         }else if(c.getTypeCarte() == "pointsCarteCommerciale"){
             return c.pointsCarteCommerciale;
         }else{
-            return 6;
+            return 6; //Va toujours là-dedans pourquoi ?
         }
     }
 
