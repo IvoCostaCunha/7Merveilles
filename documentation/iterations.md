@@ -82,7 +82,7 @@
 
 - Reglès militaires
 
-### Itération 7 - Rendu final ! - 06/05/2019
+### Itération 7 - Rendu final ! - 26/04/2019
 
 #### Fonctionnalités prévues 
 
