@@ -53,7 +53,7 @@ public class Client {
     /**
      * Construit un objet Client
      * @param ipServeur IP de l'adresse a qui connecter l'objet Client
-     */
+     **/
     public Client(String ipServeur) {
         try {
 
