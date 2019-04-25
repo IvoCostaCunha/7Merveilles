@@ -53,7 +53,7 @@ public class Client {
     /**
      * Construit un objet Client
      * @param ipServeur IP de l'adresse a qui connecter l'objet Client
-     **/
+     */
     public Client(String ipServeur) {
         try {
 
@@ -107,13 +107,21 @@ public class Client {
                     //System.out.println("carte : " + objects[0]);
                     //String strCarteTest = (String) objects[0];
                     //String strDeckCourant = (String) objects[0];
+                    ArrayList<String> typesCartes = new ArrayList<String>();
+                    typesCartes.add("pointsCarteCivil");
+                    typesCartes.add("pointsCarteMilitaire");
+                    typesCartes.add("pointsCarteCommercial");
+                    typesCartes.add("pointsCarteScientifique");
+                    int choixTypeCarteAlea = (int)(Math.random() * 4);
+
+
                     try{
                         JSONArray deckCourantJSONArray = (JSONArray)objects[0];
                         ArrayList<Carte> deckCourantClient = new ArrayList<Carte>();
 
                         for(int i=0;i<deckCourantJSONArray.length();i++){
                             JSONObject carteJSON = new JSONObject(deckCourantJSONArray.get(i).toString());
-                            Carte objCarte = new Carte(carteJSON.getString("nomCarte"),carteJSON.getInt("pointsCarte"));
+                            Carte objCarte = new Carte(carteJSON.getString("nomCarte"), typesCartes.get(choixTypeCarteAlea), 0); //A modif ou enlever
                             deckCourantClient.add(objCarte);
                         }
 
@@ -138,43 +146,12 @@ public class Client {
                     catch (JSONException e){ System.out.println(e.toString()); }
                 }
             });
-            connexion.on("envoyerPlateau", new Emitter.Listener() {
+
+            connexion.on("msgDebutPartie", new Emitter.Listener() {
                 @Override
-                public void call(Object... objects) {
-                    try {
-                        JSONArray plateauxJSONArray = (JSONArray) objects[0];
-                        ArrayList<Plateau> plateauxCourantClient = new ArrayList<Plateau>();
-                        ArrayList<Merveille> merveillesPlateauCourantClient = new ArrayList<Merveille>();
-                        Ressource ressoucePlateauCourantClient;
-
-                        for (int i = 0; i < plateauxJSONArray.length(); i++) {
-                            JSONObject plateauJSON = new JSONObject(plateauxJSONArray.get(i).toString());
-                            JSONArray merveillesPlateauxJSONArray = plateauJSON.getJSONArray("listeMerveilles");
-                            JSONObject ressourceJSON = new JSONObject(plateauJSON.getJSONObject("ressourcePlateau"));
-                            ressoucePlateauCourantClient = new Ressource(ressourceJSON.getString("nomRessource") ,ressourceJSON.getInt("nbRessource"));
-                            for (int j=0;j < merveillesPlateauxJSONArray.length(); j++)
-                            {
-                                JSONObject merveilleJSON = new JSONObject(merveillesPlateauxJSONArray.get(j).toString());
-                                Merveille objMerveille = new Merveille(merveilleJSON.getInt("numMerveille"),merveilleJSON.getInt("pointsMerveille"),merveilleJSON.getInt("pointsMilitairesMerveille"),merveilleJSON.getString("effetPlateau"));
-                                merveillesPlateauCourantClient.add(objMerveille);
-                            }
-                            Plateau objPlateau = new Plateau(merveillesPlateauCourantClient, plateauJSON.getString("nomPlateau"), ressoucePlateauCourantClient, plateauJSON.getString("facePlateau"));
-                            plateauxCourantClient.add(objPlateau);
-                        }
-                        j.setPlateau(plateauxCourantClient);
-
-                        connexion.emit("renvoiePlateau", new JSONObject(j.getPlateau()));
-
-                    } catch (JSONException e) {
-                        System.out.println(e.toString());
-                    }
-                }
-            }).on("msgDebutPartie", new Emitter.Listener() {
-                @Override
-                public void call(Object... objects) {
-                    aff.afficher("Debut de partie ...");
-                }
+                public void call(Object... objects) { aff.afficher("Debut de partie ..."); }
             });
+
 
 
         }

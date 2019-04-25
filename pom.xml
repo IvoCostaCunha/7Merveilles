@@ -15,6 +15,7 @@
         <module>lanceur</module>
         <module>outils</module>
         <module>moteur</module>
+        <module>reseau</module>
     </modules>
 
 	<packaging>pom</packaging>

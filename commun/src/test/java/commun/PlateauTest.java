@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 public class PlateauTest {
-
+/*
 
     @Test
     public void testAjoutMerveille(){
@@ -41,5 +41,5 @@ public class PlateauTest {
         }
 
         assertEquals(3,p.getNiveauDeMerveilleActuel());
-    }
+    }*/
 }

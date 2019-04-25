@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @project 7Merveilles
  */
 public class JoueurTest {
-    @Test
+    /*@Test
     public void testInitialisationRessources(){
         Joueur j = new Joueur();
         Ressource r1, r2, r3;

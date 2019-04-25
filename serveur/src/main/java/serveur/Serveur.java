@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import commun.*;
 import outils.*;
 import moteur.*;
+import serveur.Participant;
 
 /**
  * attend une connexion, on envoie une question puis on attend une réponse, jusqu'à la découverte de la bonne réponse
@@ -93,7 +94,7 @@ public class Serveur {
                 Affichage aff = new Affichage(p.getCouleur(),"Joueur num "+ p.getNb() +" -> ");
                 aff.afficher("Le joueur a joue " + carte.getNomCarte().toString());
                 //aff.afficher("Le joeur a la couleur suivante : " + p.getCouleur());
-                p.setNbPts(p.getNbPts()+ carte.getPointsCarte());
+                p.setNbPts(p.getNbPts()+ carte.getTypePointsCarte(carte));
                 aff.afficher("Le joueur a maintenant " + p.getNbPts() + " points");
                 nbJoues++;
 
@@ -103,12 +104,12 @@ public class Serveur {
                 /*if(nbJoues < nbJoueurs) {
                     //aff.afficher("C'est au tour du joueur num"+p.getNb()+" !");
                 }*/
-                 if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
+                if(nbJoues == nbJoueurs && p.cartes.size() >= 2) {
                     aff.afficher("\n\n-------------------- ! Changement de tour ! --------------------\n");
                     nbTours++;
                     jouerTour();
-                   
-                }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){        
+
+                }else if(nbJoues == nbJoueurs && p.cartes.size() == 1){
                     nbTours++;
 
                     finDeLAge();
@@ -121,7 +122,7 @@ public class Serveur {
                     }
                 }
             }
-         });
+        });
         serveur.addEventListener("renvoiePlateau", Plateau.class, new DataListener<Plateau>() {
             @Override
             public synchronized void onData(SocketIOClient socketIOClient, Plateau plateau, AckRequest ackRequest) throws Exception {
@@ -210,7 +211,7 @@ public class Serveur {
 
         ArrayList<Object> infosJoueur = new ArrayList<Object>();
         p.setCouleur(choisirCouleur());
-                infosJoueur.add(p.getCouleur());
+        infosJoueur.add(p.getCouleur());
 
         //p.nb = nbJoueurs+1;
         p.setNb(nbJoueurs+1);
@@ -244,7 +245,7 @@ public class Serveur {
 
     /**
      * Méthode qui lance la partie
-    */
+     */
     private void lancerTour() {
         setNbCoupsJoues(0);
 
@@ -256,7 +257,7 @@ public class Serveur {
             p.plateaux = moteur.getPlateaux();
             aff.afficher("Liste des cartes distribuees pour le joueur num" + p.getNb());
             for(Carte c : p.cartes) {
-                aff.afficher(c.getNomCarte() + " qui vaut " + c.getPointsCarte());
+                aff.afficher(c.getNomCarte() + " qui vaut " + c.getTypePointsCarte(c));
             }
             if (distributionsDesPlateaux == (false))
             {
@@ -287,12 +288,12 @@ public class Serveur {
         //positionCirculation = 0;
         // On reset la circulation des decks quand un tour a été fait
         // faire tourner les mains / decks
-        
+
        /* if(positionCirculation == nbJoueurs-1){
             positionCirculation = 1;
         }
         else{ positionCirculation++; }*/
-        
+
 
 
         // associer SocketIOClient et la main ????????????????
@@ -300,13 +301,13 @@ public class Serveur {
 
         // pour chaque participant, on envoie ses cartes
 
-            for(Participant client: listeClients){
-                //client.client.sendEvent("jouerTour");
-                client.client.sendEvent("envoyerPlateau",client.plateaux);
-                client.client.sendEvent("envoyerCarte", client.cartes);
+        for(Participant client: listeClients){
+            //client.client.sendEvent("jouerTour");
+            client.client.sendEvent("envoyerPlateau",client.plateaux);
+            client.client.sendEvent("envoyerCarte", client.cartes);
 
-                //aff.afficher("nbJoues=" + nbJoues);
-                // nbJoues++;
+            //aff.afficher("nbJoues=" + nbJoues);
+            // nbJoues++;
 
 
         }
@@ -347,3 +348,4 @@ public class Serveur {
 
 
 }
+

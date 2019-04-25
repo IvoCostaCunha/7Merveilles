@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Ivo COSTA CUNHA on 01/04/2019
  * @project 7Merveilles
  */
-public class MoteurTest {
+public class MoteurTest {/*
     @Test
     public void testIntialiserPlateaux(){
         ArrayList<Plateau> listePlateaux = new ArrayList<Plateau>();
@@ -35,5 +35,5 @@ public class MoteurTest {
         {
             assertEquals(listePlateaux.get(i).getNomPlateau(),listePlateauxDistribuables.get(i).getNomPlateau());
         }
-    }
+    }*/
 }

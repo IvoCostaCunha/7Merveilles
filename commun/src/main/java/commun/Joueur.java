@@ -37,10 +37,9 @@ public class Joueur {
         ressources.add(new Ressource("Or",0));
         ressources.add(new Ressource("Pierre",0));
         ressources.add(new Ressource("Brique",0));
-        ressources.add(new Ressource("Fiole",0));
-        ressources.add(new Ressource("Tissu",0));
+        ressources.add(new Ressource("Verre",0));
+        ressources.add(new Ressource("Papyrus",0));
         ressources.add(new Ressource("Minerai",0));
-        ressources.add(new Ressource("Papier",0));
     }
 
     /**
@@ -91,12 +90,17 @@ public class Joueur {
         return verif;
     }
 
+
+    private int getPointsCarte(Carte c) {
+        return c.getTypePointsCarte(c);
+    }
+
     /**
      * Méthode qui rajoute une carte utilisé a la liste des cartes utilisées et rajoute les points de la carte au joueur
      * @param uneCarte la carte utilisée
      */
     public void ajouterCarteJoue(Carte uneCarte){
-        ajouterPoints(uneCarte.getPointsCarte());
+        ajouterPoints(getPointsCarte(uneCarte));
         cartesJouees.add(uneCarte);
     }
 
@@ -110,6 +114,7 @@ public class Joueur {
         return carteChoisie;
     }
 
+
     /**
      * Méthode qui détermine la facon de jouer la carte du bot 50% de utiliser la carte / 50% de chance de constsuire la
      * Merveille
@@ -118,12 +123,12 @@ public class Joueur {
         int rand = (int)(Math.random()*10);
         Carte carte = choisirCarte();
         if(rand > 5){
-            ajouterPoints(carte.getPointsCarte());
+            ajouterPoints(getPointsCarte(carte));
             ajouterCarteJoue(carte);
         }
         else{
             if(!construireMerveille(carte)){
-                ajouterPoints(carte.getPointsCarte());
+                ajouterPoints(getPointsCarte(carte));
                 ajouterCarteJoue(carte);
             }
             else{
@@ -140,22 +145,22 @@ public class Joueur {
         return main;
     }
 
-
-    /*-------------------- Seteurs --------------------*/
-    public void setMain(ArrayList<Carte> uneMain) { main = uneMain; }
-
     /**
-     * Méthode qui permet de définir le plateau en début de partie pour chacuns des joueurs
+     * Méthode qui permet de choisir un plateau en début de partie parmi ceux restants
      * @param listePlateau
      * @return la liste des Plateau sans le Plateau choisi
      */
-    public void setPlateau(ArrayList<Plateau> listePlateau) {
+    public ArrayList<Plateau> choisirPlateau(ArrayList<Plateau> listePlateau){
         int rand = (int)(Math.random()*listePlateau.size()-1);
         this.plateau = listePlateau.get(rand);
         listePlateau.remove(rand);
+        return listePlateau;
     }
+
+    /*-------------------- Seteurs --------------------*/
+    public void setMain(ArrayList<Carte> uneMain) { main = uneMain; }
     public void setNum(int unNum) { num = unNum; }
-    public void setNomPlateau(String nomPlateau) { nomPlateau = nomPlateau; }
+    public void setNomPlateau(String nomPlateau) { nomPlateau = this.nomPlateau; }
 
 
     /*-------------------- Geteurs --------------------*/
