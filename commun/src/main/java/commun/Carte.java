@@ -128,6 +128,12 @@ public class Carte {
         this.prixCarteRessources = prixCarteRessources;
     }*/
 
+    /*---------- Setteurs ----------*/
+    public void setPointsCarteMilitaire(int pts) { pointsCarteMilitaire = pts;}
+    public void setPointsCommercialeCarte(int pts) { pointsCarteCommerciale = pts;}
+    public void setPointsScientifiqueCarte(int pts) { pointsCarteScientifique = pts;}
+    public void setPointsCivilCarte(int pts) { pointsCarteCivil = pts;}
+
     /*---------- Geteurs ----------*/
     public String getNomCarte() { return nomCarte; }
     public int getPointsCarteMilitaire() { return pointsCarteMilitaire; }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import commun.*;
 import outils.*;
 import moteur.*;
-import serveur.Participant;
 
 /**
  * attend une connexion, on envoie une question puis on attend une réponse, jusqu'à la découverte de la bonne réponse
@@ -92,9 +91,28 @@ public class Serveur {
                 aff = new Affichage("GREY", "");
                 aff.afficher("C'est au tour du joueur num" + p.getNb() + " !");
                 Affichage aff = new Affichage(p.getCouleur(),"Joueur num "+ p.getNb() +" -> ");
-                aff.afficher("Le joueur a joue " + carte.getNomCarte().toString());
-                //aff.afficher("Le joeur a la couleur suivante : " + p.getCouleur());
+                String nomCarte = carte.getNomCarte();
+                String typeCarte = carte.getTypeCarte();
+                //Pour résoudre bug bizarre :
+                if(carte.getTypeCarte() == "null") {
+                    typeCarte = "pointsCarteCommerciale";
+                }
+                aff.afficher("Le joueur a joue " + nomCarte + " ("+ typeCarte+") qui vaut " + carte.getTypePointsCarte(carte));
+                //aff.afficher("Le joueur a la couleur suivante : " + p.getCouleur());
                 p.setNbPts(p.getNbPts()+ carte.getTypePointsCarte(carte));
+                for(Carte c : p.cartes) {
+                    String typeC = c.getTypeCarte();
+                    if(typeC == "pointsCarteMilitaire") {
+                        c.setPointsCarteMilitaire(c.getPointsCarteMilitaire() + c.getTypePointsCarte(c));
+                    }else if(typeC == "pointsCarteCommerciale") {
+                        c.setPointsCommercialeCarte(c.getPointsCommercialeCarte() + c.getTypePointsCarte(c));
+                    }else if(typeC == "pointsCarteScientifique") {
+                        c.setPointsScientifiqueCarte(c.getPointsScientifiqueCarte() + c.getTypePointsCarte(c));
+                    }else if(typeC == "pointsCarteCivil") {
+                        c.setPointsCivilCarte(c.getPointsCivilCarte() + c.getTypePointsCarte(c));
+                    }
+
+                }
                 aff.afficher("Le joueur a maintenant " + p.getNbPts() + " points");
                 nbJoues++;
 
@@ -129,7 +147,7 @@ public class Serveur {
                 Participant p = retrouverParticipant(socketIOClient);
                 if (nbTours == 0 && nbJoues == 0)
                 {
-                    aff.afficher("Le plateau du joueur num" + p.getNb() +" est"+ plateau.getNomPlateau());
+                    aff.afficher("Le plateau du joueur num" + p.getNb() + " est" + plateau.getNomPlateau());
                     p.plateaux.remove(plateau);
                     if (nbJoues == 1)
                     {
@@ -140,7 +158,6 @@ public class Serveur {
                         nbJoues++;
                     }
                 }
-
             }
         });
     }
@@ -162,6 +179,12 @@ public class Serveur {
         Affichage aff = new Affichage("YELLOW"," -> ");
         if(nbJoueurs == joueursScore) {
             aff.afficher("Le vainqueur de cet âge est le joueur numero" + pMax.getNb() + " avec " + pMax.getNbPts() + " points");
+            aff.afficher("Voici ses différents points :\n");
+            for(Carte c : pMax.cartes) {
+                aff.afficher("Points millitaires : "+ c.getPointsCarteMilitaire());
+                aff.afficher("Points civils : "+ c.getPointsCivilCarte());
+
+            }
         }
 
     }

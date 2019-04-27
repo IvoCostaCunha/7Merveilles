@@ -42,18 +42,18 @@ public class ServeurTest {
     @Test
     public void testAjoutMain() {
     	Participant p;
-    	Serveur.lancerTour();
+    	assertTrue(Serveur.lancerTour());
     }
 
     @Test
-    public Participant retrouverParticipant(SocketIOClient s) {
-        Participant j = null;
-
-    /*    for(Participant p : listeClients) {
+    public void retrouverParticipant(SocketIOClient s) {
+    for(Participant p : listeClients) {
+            boolean findParticipant;
             if (p.client.getRemoteAddress().toString().equals(s.getRemoteAddress().toString())) {
-                j = p;
+                findParticipant = true;
                 break;
             }
-        }*/
+            asserTrue(findParticipant);
+        }
 
 }

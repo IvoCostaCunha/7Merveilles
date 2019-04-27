@@ -158,8 +158,8 @@ public class Client {
         catch (URISyntaxException e) { e.printStackTrace(); }
     }
 
-    public void seConnecter() {
+    public boolean seConnecter() {
         connexion.connect();
-
+        return true;
     }
 }

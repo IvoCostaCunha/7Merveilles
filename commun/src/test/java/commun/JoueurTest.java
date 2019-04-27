@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @project 7Merveilles
  */
 public class JoueurTest {
-    /*@Test
+    @Test
     public void testInitialisationRessources(){
         Joueur j = new Joueur();
         Ressource r1, r2, r3;
@@ -42,7 +42,7 @@ public class JoueurTest {
     public void testRenvoyerCartes(){
         ArrayList<Carte> listeCartes = new ArrayList<Carte>();
         for(int i=0;i<7;i++){
-            listeCartes.add(new Carte("Carte n" + i,i));
+            listeCartes.add(new Carte("Carte n" + i, "pointsCarteCivil", 10));
         }
 
         Joueur j1 = new Joueur();
@@ -61,7 +61,7 @@ public class JoueurTest {
     public void testChoisirCarte(){
         ArrayList<Carte> listeCartes = new ArrayList<Carte>();
         for(int i=0;i<7;i++){
-            listeCartes.add(new Carte("Carte n" + i,i));
+            listeCartes.add(new Carte("Carte n" + i, "pointsCarteCivil", 10));
         }
         Joueur j1 = new Joueur();
         Joueur j2 = new Joueur();
@@ -79,11 +79,11 @@ public class JoueurTest {
     @Test
     public void ajouterCarteJoue(){
         Joueur j = new Joueur();
-        Carte carteTest = new Carte("test",420);
+        Carte carteTest = new Carte("Carte n1", "pointsCarteCivil", 10);
         j.ajouterCarteJoue(carteTest);
         assertTrue(carteTest.equals(j.getCartesJouees().get(0)));
     }
-/*
+
     @Test
     public void testChoisirPlateau(){
         Joueur j1 = new Joueur();
@@ -106,7 +106,7 @@ public class JoueurTest {
 
         ArrayList<Carte> listeCartes = new ArrayList<Carte>();
         for(int i=0;i<7;i++){
-            listeCartes.add(new Carte("Carte n" + i,i));
+            listeCartes.add(new Carte("Carte n" + i, "pointsCarteCivil", i));
         }
 
         ArrayList<Plateau> listePlateau= new ArrayList<Plateau>();
@@ -120,5 +120,5 @@ public class JoueurTest {
         j.jouer();
 
         assertTrue((j.getPlateau().getNiveauDeMerveilleActuel() > 0) || (j.getPoints() > 0));
-    }*/
+    }
 }

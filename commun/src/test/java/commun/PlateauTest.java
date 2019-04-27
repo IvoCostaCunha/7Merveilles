@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 public class PlateauTest {
-/*
 
     @Test
     public void testAjoutMerveille(){
@@ -34,12 +33,12 @@ public class PlateauTest {
 
         p.ajouterMerveille(m,m2,m3);
 
-        Carte c1 = new Carte("Carte1",2);
+        Carte c1 = new Carte("test", "type", 1);
 
         while(p.construireMerveilleSuivante(c1)){
             p.construireMerveilleSuivante(c1);
         }
 
         assertEquals(3,p.getNiveauDeMerveilleActuel());
-    }*/
+    }
 }

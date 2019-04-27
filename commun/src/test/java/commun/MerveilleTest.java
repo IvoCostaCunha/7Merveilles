@@ -26,10 +26,10 @@ class MerveilleTest {
 	}
 
 	
-	//@Test
-	/*public void ValeuRandomMerveilleTest() throws Exception
+	@Test
+	public void ValeuRandomMerveilleTest() throws Exception
 	{
-		Merveille merv = new Merveille(1);
+		Merveille merv = new Merveille(0, 1, 2, "rien");
 		int res = 20;
 		if (merv.getPointsMerveille() !=20)
 		{
@@ -40,6 +40,6 @@ class MerveilleTest {
 			assertEquals(res == merv.getPointsMerveille(),true);
 		}
 		
-	}*/
+	}
 
 }
