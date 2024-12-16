@@ -6,8 +6,8 @@ Cette application avec une architecture client-serveur numérise le jeu de plate
 Le jeu sera joué par des bots qui simuleront de vrais joueurs. Chaque client représente un bot et chaque bot a une stratégie differente.
 
 ## Dépendances
-- [Maven](https://maven.apache.org/) (Testé with Maven@3.9.9)
-- [Java](https://adoptium.net/) (Testé with Java@21)
+- [Maven](https://maven.apache.org/) (Testé avec Maven@3.9.9)
+- [Java](https://adoptium.net/) (Testé avec Java@21)
 
 ## Build
 Maven est utilisé pour build le projet.
